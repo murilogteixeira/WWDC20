@@ -61,9 +61,10 @@ class GameScene: SKScene {
         addChild(leftWall)
         addChild(rightWall)
         
-        let textDialog = [
-            "Aqui aparecerão as dicas e \ndesafios a serem cumpridos \n\nAs ações podem ser\ncontroladas pelos botões\nna TouchBar.",
-            "Caso o seu dispositivo não\npossua TouchBar basta\npressionar cmd+shift+8."]
+        let textDialog = ["Aqui aparecerão as dicas e \ndesafios a serem cumpridos \n\nAs ações podem ser\ncontroladas pelos botões\nna TouchBar.",
+                          "Caso o seu dispositivo não\npossua TouchBar basta\npressionar cmd+shift+8.",
+                          "Teste1",
+                          "Teste2"]
         dialogBox = DialogBox(position: CGPoint(x: 0, y: -30), size: 30, textDialog: textDialog)
         addChild(dialogBox)
     }
@@ -78,7 +79,12 @@ class GameScene: SKScene {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
         touchBar.customizationIdentifier = .touchBarIdentifier
-        touchBar.defaultItemIdentifiers = [.flexibleSpace, .infoLabelItem, .flexibleSpace, .button1, .button2, .button3, .flexibleSpace, .otherItemsProxy]
+        
+        let button1: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == 0 ? .button1Disable : .button1
+        let button2: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button2Disable : .button2
+        let button3: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button3 : .button3Disable
+
+            touchBar.defaultItemIdentifiers = [.flexibleSpace, .infoLabelItem, .flexibleSpace, button1, button2, button3, .flexibleSpace, .otherItemsProxy]
         return touchBar
     }
     
@@ -162,31 +168,31 @@ extension GameScene {
 }
 
 // MARK: Touch
-extension GameScene {
-    func touchDown(atPoint pos : CGPoint) {
-        print("touchDown: \(pos)")
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        print("touchMoved: \(pos)")
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        print("touchUp: \(pos)")
-    }
-    
-    override func mouseDown(with event: NSEvent) {
-        self.touchDown(atPoint: event.location(in: self))
-    }
-    
-    override func mouseDragged(with event: NSEvent) {
-        self.touchMoved(toPoint: event.location(in: self))
-    }
-    
-    override func mouseUp(with event: NSEvent) {
-        self.touchUp(atPoint: event.location(in: self))
-    }
-}
+//extension GameScene {
+//    func touchDown(atPoint pos : CGPoint) {
+//        print("touchDown: \(pos)")
+//    }
+//
+//    func touchMoved(toPoint pos : CGPoint) {
+//        print("touchMoved: \(pos)")
+//    }
+//
+//    func touchUp(atPoint pos : CGPoint) {
+//        print("touchUp: \(pos)")
+//    }
+//
+//    override func mouseDown(with event: NSEvent) {
+//        self.touchDown(atPoint: event.location(in: self))
+//    }
+//
+//    override func mouseDragged(with event: NSEvent) {
+//        self.touchMoved(toPoint: event.location(in: self))
+//    }
+//
+//    override func mouseUp(with event: NSEvent) {
+//        self.touchUp(atPoint: event.location(in: self))
+//    }
+//}
 
 // MARK: SKPhysicsContactDelegate
 extension GameScene: SKPhysicsContactDelegate {
@@ -205,16 +211,38 @@ extension GameScene: SKPhysicsContactDelegate {
         }
         else if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == dialogBoxCategory)) {
             dialogBox.contact()
+            dialogBox.currentTextIndex = 0
             dialogBox.showDialog()
             windowController?.customTouchBar = makeTouchBar()
         }
     }
 }
 
+// MARK: NSTouchBarDelegate
 extension GameScene: NSTouchBarDelegate {
-    fileprivate var button1Name: String { "Previous" }
-    fileprivate var button2Name: String { "Next" }
-    fileprivate var button3Name: String { "Close" }
+    var fontArrow: NSFont? { NSFont(name: "PressStart2P-Regular", size: 12) }
+    var fontClose: NSFont? { NSFont(name: "PressStart2P-Regular", size: 14) }
+
+    var button1: NSButton {
+        let button = NSButton(title: "<", target: self, action: #selector(prevButton(_:)))
+        button.font = fontArrow
+        button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
+        return button
+    }
+    
+    var button2: NSButton {
+        let button = NSButton(title: ">", target: self, action: #selector(nextButton(_:)))
+        button.font = fontArrow
+        button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
+        return button
+    }
+    
+    var button3: NSButton {
+        let button = NSButton(title: "x", target: self, action: #selector(closeButton(_:)))
+        button.font = fontClose
+        button.bezelColor = NSColor.hexadecimal(hex: 0xFF5E55)
+        return button
+    }
 
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         let custom = NSCustomTouchBarItem(identifier: identifier)
@@ -225,24 +253,27 @@ extension GameScene: NSTouchBarDelegate {
             label.font = NSFont(name: "PressStart2P-Regular", size: 16)
             custom.view = label
         case .button1:
-            let button = NSButton(title: "<", target: self, action: #selector(prevButton(_:)))
-            button.font = NSFont(name: "PressStart2P-Regular", size: 12)
-            button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
-            custom.view = button
+            custom.view = button1
         case .button2:
-            let button = NSButton(title: ">", target: self, action: #selector(nextButton(_:)))
-            button.font = NSFont(name: "PressStart2P-Regular", size: 12)
-            button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
-            custom.view = button
+            custom.view = button2
         case .button3:
-            let button = NSButton(title: "x", target: self, action: #selector(closeButton(_:)))
-            button.font = NSFont(name: "PressStart2P-Regular", size: 14)
-            button.bezelColor = NSColor.hexadecimal(hex: 0xFF5E55)
+            custom.view = button3
+        case .button1Disable:
+            let button = button1
+            button.isEnabled = false
+            custom.view = button
+        case .button2Disable:
+            let button = button2
+            button.isEnabled = false
+            custom.view = button
+        case .button3Disable:
+            let button = button3
+            button.isEnabled = false
             custom.view = button
         default:
             return nil
         }
-        
+
         return custom
     }
 
@@ -251,6 +282,7 @@ extension GameScene: NSTouchBarDelegate {
             dialogBox.currentTextIndex -= 1
             dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
         }
+        windowController?.customTouchBar = makeTouchBar()
     }
 
     @objc func nextButton(_ sender: NSButton) {
@@ -259,6 +291,7 @@ extension GameScene: NSTouchBarDelegate {
             dialogBox.currentTextIndex += 1
             dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
         }
+        windowController?.customTouchBar = makeTouchBar()
     }
 
     @objc func closeButton(_ sender: NSButton) {

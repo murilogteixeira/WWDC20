@@ -9,6 +9,9 @@
 import SpriteKit
 
 class DialogBox: SKSpriteNode {
+    var currentTextIndex = 0
+    var textDialog: [String]?
+    var label: SKLabelNode?
     var dialogContainer: SKSpriteNode?
     var dialogIsShow = false {
         didSet {
@@ -16,14 +19,10 @@ class DialogBox: SKSpriteNode {
                 dialogContainer = setupDialogContainer()
             }
             else {
-                dialogContainer = nil
                 label = nil
             }
         }
     }
-    var currentTextIndex = 0
-    var textDialog: [String]?
-    var label: SKLabelNode?
     
     convenience init(position: CGPoint, size: CGFloat, textDialog: [String]?) {
         self.init()
@@ -71,10 +70,9 @@ class DialogBox: SKSpriteNode {
                 let positionDown = SKAction.moveTo(y: dialog.position.y - 80, duration: 0.3)
                 let remove = SKAction.run {
                     self.dialogContainer?.removeFromParent()
+                    self.dialogContainer = nil
                 }
-                dialog.run(scaleDown)
-                dialog.run(.sequence([positionDown, remove]))
-                
+                dialog.run(.sequence([scaleDown, positionDown, remove]))
                 dialogIsShow = false
             }
             return
@@ -82,14 +80,12 @@ class DialogBox: SKSpriteNode {
         
         dialogIsShow = true
         dialogContainer?.setScale(0)
-//        dialogContainer = MessageBox(text: text, position: .zero, size: CGSize(width: 400, height: 400))
         dialogContainer?.zPosition = NodesZPosition.dialog.rawValue
         addChild(dialogContainer!)
         let scaleUp = SKAction.scale(to: 1, duration: 0.3)
         let positionUp = SKAction.moveTo(y: dialogContainer!.position.y + 80, duration: 0.3)
         dialogContainer?.run(scaleUp)
         dialogContainer?.run(positionUp)
-        
     }
     
     func contact() {
