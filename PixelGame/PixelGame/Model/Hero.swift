@@ -11,21 +11,23 @@ import SpriteKit
 class Hero: SKSpriteNode {
     var walking = false {
         didSet {
-            if walking {
-                walkAnimation(true)
-                stopAnimation(false)
-            }
-            else {
-                walkAnimation(false)
-                stopAnimation(true)
+            if !jumping {
+                if walking {
+                    walkAnimation(true)
+                    stopAnimation(false)
+                }
+                else {
+                    walkAnimation(false)
+                    stopAnimation(true)
+                }
             }
         }
     }
     
-    var heroIsWalking = false {
+    var isWalking = false {
         didSet {
             if isOnTheFloor {
-                walking = heroIsWalking
+                walking = isWalking
             }
         }
     }
@@ -33,9 +35,14 @@ class Hero: SKSpriteNode {
     var jumping = false {
         didSet {
             if jumping {
+//                isOnTheFloor = false
                 texture = jumpingFrame
                 walkAnimation(false)
                 stopAnimation(false)
+            }
+            else {
+//                isOnTheFloor = true
+//                print("jumping stopped")
             }
         }
     }
@@ -67,7 +74,8 @@ class Hero: SKSpriteNode {
     let velocity: CGFloat = 5
     var isOnTheFloor = false {
         didSet {
-            if !isOnTheFloor {
+            if isOnTheFloor {
+                walking = isWalking
                 jumping = false
             }
         }
@@ -91,6 +99,7 @@ class Hero: SKSpriteNode {
         physicsBody?.contactTestBitMask = floorCategory | dialogBoxCategory
         physicsBody?.collisionBitMask = floorCategory
         physicsBody?.allowsRotation = false
+        
         stopAnimation(true)
     }
     
@@ -104,7 +113,7 @@ class Hero: SKSpriteNode {
             run(.moveTo(x: position.x + velocity, duration: 0))
             xScale = abs(xScale) * 1
         default:
-            print("Unknow direction")
+            break
         }
     }
     
@@ -112,12 +121,21 @@ class Hero: SKSpriteNode {
         if canJump {
             canJump = false
             jumping = true
+//            isOnTheFloor = false
             physicsBody?.applyImpulse(CGVector(dx: 0, dy: 110))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
                 self.canJump = true
             }
         }
     }
+
+//    private func jump() {
+//        if gameScene.upKey.pressed && !gameScene.upKey.busy {
+//            gameScene.upKey.busy = true
+//            hero.jump()
+//            hero.isOnTheFloor = false
+//        }
+//    }
     
     // MARK: Animations
     private func stopAnimation(_ actived: Bool) {
@@ -140,21 +158,22 @@ class Hero: SKSpriteNode {
 }
 
 //MARK: GameSceneDelegate
-extension Hero: GameSceneDelegate {
+extension Hero: GameSceneSubscriber {
     func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
             if gameScene.directionPressed == .none {
                 gameScene.directionPressed = .left
-                heroIsWalking = true
+                isWalking = true
             }
         case .right:
             if gameScene.directionPressed == .none {
                 gameScene.directionPressed = .right
-                heroIsWalking = true
+                isWalking = true
             }
         case .up:
             gameScene.upKey.pressed = true
+            jump()
         default:
             print("keyCode: \(keyCode?.description ?? "")")
         }
@@ -165,12 +184,12 @@ extension Hero: GameSceneDelegate {
         case .left:
             if gameScene.directionPressed == .left {
                 gameScene.directionPressed = .none
-                heroIsWalking = false
+                isWalking = false
             }
         case .right:
             if gameScene.directionPressed == .right {
                 gameScene.directionPressed = .none
-                heroIsWalking = false
+                isWalking = false
             }
         case .up:
             gameScene.upKey.pressed = false

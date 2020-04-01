@@ -9,24 +9,24 @@
 import SpriteKit
 
 class DialogBox: SKSpriteNode {
-    var currentTextIndex = 0
-    var textDialog: [String]?
-    var label: SKLabelNode?
-    var dialogContainer: SKSpriteNode?
-    var dialogIsShow = false {
-        didSet {
-            if dialogIsShow {
-                dialogContainer = setupDialogContainer()
-            }
-            else {
-                label = nil
-            }
-        }
-    }
+//    var currentTextIndex = 0
+//    var textDialog: [String]?
+//    var label: SKLabelNode?
+////    var dialogContainer: SKSpriteNode?
+//    var dialogIsShow = false {
+//        didSet {
+//            if dialogIsShow {
+//                dialogContainer = setupDialogContainer()
+//            }
+//            else {
+//                label = nil
+//            }
+//        }
+//    }
     
     convenience init(position: CGPoint, size: CGFloat, textDialog: [String]?) {
         self.init()
-        self.textDialog = textDialog
+//        self.textDialog = textDialog
         self.size = CGSize(width: size, height: size)
         self.position = position
         self.name = NodeName.dialogBox.rawValue
@@ -42,57 +42,57 @@ class DialogBox: SKSpriteNode {
         addChild(sprite)
     }
     
-    func setupDialogContainer() -> SKSpriteNode {
-        let dialogContainer = PixelArtObject(format: dialogContentFormat, size: CGSize(width: 400, height: 400)).objectSpriteNode
-        dialogContainer.setScale(0)
-        dialogContainer.name = NodeName.messageBox.rawValue
-        dialogContainer.zPosition = NodesZPosition.messageBox.rawValue
-        
-        let label = SKLabelNode()
-        label.fontName = "PressStart2P-Regular"
-        label.text = textDialog?[currentTextIndex]
-        label.fontSize = 12
-        label.fontColor = .white
-        label.verticalAlignmentMode = .center
-        label.horizontalAlignmentMode = .center
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 0
-        label.zPosition = NodesZPosition.label.rawValue
-        dialogContainer.addChild(label)
-        self.label = label
-        return dialogContainer
-    }
+//    func setupDialogContainer() -> SKSpriteNode {
+//        let dialogContainer = PixelArtObject(format: dialogContentFormat, size: CGSize(width: 400, height: 400)).objectSpriteNode
+//        dialogContainer.setScale(0)
+//        dialogContainer.name = NodeName.messageBox.rawValue
+//        dialogContainer.zPosition = NodesZPosition.messageBox.rawValue
+//        
+//        let label = SKLabelNode()
+//        label.fontName = "PressStart2P-Regular"
+//        label.text = textDialog?[currentTextIndex]
+//        label.fontSize = 12
+//        label.fontColor = .white
+//        label.verticalAlignmentMode = .center
+//        label.horizontalAlignmentMode = .center
+//        label.lineBreakMode = .byWordWrapping
+//        label.numberOfLines = 0
+//        label.zPosition = NodesZPosition.label.rawValue
+//        dialogContainer.addChild(label)
+//        self.label = label
+//        return dialogContainer
+//    }
     
-    func showDialog(_ show: Bool) {
-        guard !dialogIsShow else {
-            if !show, let dialog = dialogContainer {
-                let fadeOut = SKAction.fadeOut(withDuration: 0.3)
-                let scaleDown = SKAction.scale(to: 0, duration: 0.3)
-                let positionDown = SKAction.moveTo(y: dialog.position.y - 80, duration: 0.3)
-                let remove = SKAction.run {
-                    self.dialogContainer?.removeFromParent()
-                    self.dialogContainer = nil
-                }
-                dialog.run(fadeOut)
-                dialog.run(scaleDown)
-                dialog.run(.sequence([positionDown, remove]))
-                dialogIsShow = false
-            }
-            return
-        }
-        
-        dialogIsShow = true
-        dialogContainer?.setScale(0)
-        dialogContainer?.alpha = 0
-        dialogContainer?.zPosition = NodesZPosition.dialog.rawValue
-        addChild(dialogContainer!)
-        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
-        let scaleUp = SKAction.scale(to: 1, duration: 0.3)
-        let positionUp = SKAction.moveTo(y: dialogContainer!.position.y + 80, duration: 0.3)
-        dialogContainer?.run(fadeIn)
-        dialogContainer?.run(scaleUp)
-        dialogContainer?.run(positionUp)
-    }
+//    func showDialog(_ show: Bool) {
+//        guard !dialogIsShow else {
+//            if !show, let dialog = dialogContainer {
+//                let fadeOut = SKAction.fadeOut(withDuration: 0.3)
+//                let scaleDown = SKAction.scale(to: 0, duration: 0.3)
+//                let positionDown = SKAction.moveTo(y: dialog.position.y - 80, duration: 0.3)
+//                let remove = SKAction.run {
+//                    self.dialogContainer?.removeFromParent()
+//                    self.dialogContainer = nil
+//                }
+//                dialog.run(fadeOut)
+//                dialog.run(scaleDown)
+//                dialog.run(.sequence([positionDown, remove]))
+//                dialogIsShow = false
+//            }
+//            return
+//        }
+//        
+//        dialogIsShow = true
+//        dialogContainer?.setScale(0)
+//        dialogContainer?.alpha = 0
+//        dialogContainer?.zPosition = NodesZPosition.dialog.rawValue
+//        addChild(dialogContainer!)
+//        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+//        let scaleUp = SKAction.scale(to: 1, duration: 0.3)
+//        let positionUp = SKAction.moveTo(y: dialogContainer!.position.y + 80, duration: 0.3)
+//        dialogContainer?.run(fadeIn)
+//        dialogContainer?.run(scaleUp)
+//        dialogContainer?.run(positionUp)
+//    }
     
     func contact() {
         physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
@@ -121,33 +121,7 @@ extension DialogBox {
         ]
     }
     
-    var dialogContentFormat: [[NSColor]] {
-        [
-            [c,c,c,c,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,c,c,c,c],
-            [c,c,b,b,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,b,b,c,c],
-            [c,b,d,d,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,d,d,b,c],
-            [c,b,d,l,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,l,d,b,c],
-            [b,d,l,d,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,l,d,b],
-            [b,d,l,d,d,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,d,d,l,d,b],
-            [c,b,d,l,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,l,d,b,c],
-            [c,b,d,d,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,d,d,b,c],
-            [c,c,b,b,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,b,b,c,c],
-            [c,c,c,c,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,c,c,c,c],
-        ]
-    }
+    
 
 }
 

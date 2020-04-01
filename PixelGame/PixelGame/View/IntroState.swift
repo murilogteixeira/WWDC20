@@ -14,9 +14,6 @@ class IntroState: GKState {
     unowned let gameScene: GameScene
     var controlNode: SKNode!
     var scene: SKSpriteNode!
-//    
-//    var directionPressed = KeyCode.none
-//    var upKey = Key(pressed: false, busy: false, name: .up)
     
     lazy var floor = Floor(size: CGSize(width: self.scene.frame.size.width, height: self.scene.frame.height * 0.15),
                            position: CGPoint(x: 0, y: -self.scene.size.height / 2))
@@ -25,16 +22,9 @@ class IntroState: GKState {
     
     lazy var hero: Hero = {
         let hero = Hero(size: 80)
-        self.gameScene.delegateScene = hero
+        self.gameScene.add(subscriber: hero)
         return hero
     }()
-//    var heroWalking = false {
-//        didSet {
-//            if hero.isOnTheFloor {
-//                hero.walking = heroWalking
-//            }
-//        }
-//    }
     
     lazy var dialogBox: DialogBox = {
         let textDialog = [
@@ -54,7 +44,39 @@ class IntroState: GKState {
             "Teste1",
             "Teste2"
         ]
-        let node = DialogBox(position: .zero, size: 30, textDialog: textDialog)
+        let boxSize: CGFloat = 30
+        let widthScene = (self.scene.size.width / 2) - boxSize
+        let heightScene = -self.scene.size.width / 2
+        let position = CGPoint(x: CGFloat.random(in: -widthScene..<widthScene), y: (self.scene.size.height / 2) + boxSize)
+        let node = DialogBox(position: position, size: boxSize, textDialog: textDialog)
+        node.run(.moveTo(y: heightScene, duration: 5))
+        return node
+    }()
+    
+    lazy var dialogContainer: DialogMessageContainer? = {
+        let textDialog = [
+            """
+            Aqui aparecerão as dicas e
+            desafios a serem cumpridos
+
+            As ações podem ser
+            controladas pelos botões
+            na TouchBar.
+            """,
+            """
+            Caso o seu dispositivo não
+            possua TouchBar basta
+            pressionar cmd+shift+8.
+            """,
+            "Teste1",
+            "Teste2"
+        ]
+        let node = DialogMessageContainer(position: .zero, size: 400, textDialog: textDialog)
+        return node
+    }()
+    
+    lazy var door: SKSpriteNode = {
+        let node = Door(color: .black, size: CGSize(width: 100, height: 200))
         return node
     }()
     
@@ -98,8 +120,7 @@ class IntroState: GKState {
     }
     
     override func update(deltaTime seconds: TimeInterval) {
-        move()
-        jump()
+        hero.move(direction: gameScene.directionPressed)
     }
     
     func buildScene() -> SKSpriteNode {
@@ -119,28 +140,39 @@ class IntroState: GKState {
     }
 }
 
-// MARK: Move/Jump
 extension IntroState {
-    private func move() {
-        switch gameScene.directionPressed {
-        case .left:
-            hero.move(direction: .left)
-        case .right:
-            hero.move(direction: .right)
-        default:
-            break
+    func showDialogContainer(_ show: Bool) {
+        guard show, let dialogConteiner = dialogContainer, !dialogConteiner.dialogIsShow else {
+            if !show, let dialog = dialogContainer {
+                let fadeOut = SKAction.fadeOut(withDuration: 0.3)
+                let scaleDown = SKAction.scale(to: 0, duration: 0.3)
+                let positionDown = SKAction.moveTo(y: dialog.position.y - 80, duration: 0.3)
+                let remove = SKAction.run {
+                    self.dialogContainer?.removeFromParent()
+                    self.dialogContainer = nil
+                }
+                dialog.run(fadeOut)
+                dialog.run(scaleDown)
+                dialog.run(.sequence([positionDown, remove]))
+                dialogContainer?.dialogIsShow = false
+            }
+            return
         }
-    }
-
-    private func jump() {
-        if gameScene.upKey.pressed && !gameScene.upKey.busy {
-            gameScene.upKey.busy = true
-            hero.jump()
-            hero.isOnTheFloor = false
-        }
+        
+        dialogContainer?.dialogIsShow = true
+        dialogContainer?.alpha = 0
+        dialogContainer?.zPosition = NodesZPosition.dialog.rawValue
+        scene.addChild(dialogContainer!)
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
+        let scaleUp = SKAction.scale(to: 1, duration: 0.3)
+//        let positionUp = SKAction.moveTo(y: dialogContainer!.position.y + 80, duration: 0.3)
+        dialogContainer?.run(fadeIn)
+        dialogContainer?.run(scaleUp)
+//        dialogContainer?.run(positionUp)
     }
 }
 
+//MARK: SKPhysicsContactDelegate
 extension IntroState: SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         let heroCategory = CategoryBitmask.hero.rawValue
@@ -149,16 +181,17 @@ extension IntroState: SKPhysicsContactDelegate {
         // Contact Hero with Floor
         if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == floorCategory)) || ((contact.bodyA.categoryBitMask == floorCategory) && (contact.bodyB.categoryBitMask == heroCategory)) {
 
-            if hero.isOnTheFloor == false {
-                hero.walking = hero.heroIsWalking
-            }
             hero.isOnTheFloor = true
             gameScene.upKey.busy = false
+            
+            if hero.isOnTheFloor {
+                hero.walking = hero.isWalking
+            }
         }
         else if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == dialogBoxCategory)) {
             dialogBox.contact()
-            dialogBox.currentTextIndex = 0
-            dialogBox.showDialog(true)
+            dialogContainer?.currentTextIndex = 0
+            showDialogContainer(true)
             windowController?.customTouchBar = makeTouchBar()
         }
     }
@@ -171,9 +204,9 @@ extension IntroState {
         touchBar.delegate = self
         touchBar.customizationIdentifier = .touchBarIdentifier
         
-        let button1: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == 0 ? .button1Disable : .button1
-        let button2: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button2Disable : .button2
-        let button3: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button3 : .button3Disable
+        let button1: NSTouchBarItem.Identifier = dialogContainer?.currentTextIndex == 0 ? .button1Disable : .button1
+        let button2: NSTouchBarItem.Identifier = dialogContainer?.currentTextIndex == dialogContainer!.textDialog.count - 1 ? .button2Disable : .button2
+        let button3: NSTouchBarItem.Identifier = dialogContainer?.currentTextIndex == dialogContainer!.textDialog.count - 1 ? .button3 : .button3Disable
 
             touchBar.defaultItemIdentifiers = [.flexibleSpace, .infoLabelItem, .flexibleSpace, button1, button2, button3, .flexibleSpace, .otherItemsProxy]
         return touchBar
@@ -244,24 +277,25 @@ extension IntroState: NSTouchBarDelegate {
     }
 
     @objc func prevButton(_ sender: NSButton) {
-        if dialogBox.currentTextIndex > 0 {
-            dialogBox.currentTextIndex -= 1
-            dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
+        if dialogContainer!.currentTextIndex > 0 {
+            dialogContainer?.currentTextIndex -= 1
+            dialogContainer?.label.text = dialogContainer?.textDialog[dialogContainer!.currentTextIndex]
         }
         windowController?.customTouchBar = makeTouchBar()
     }
 
     @objc func nextButton(_ sender: NSButton) {
-        if let textDialog = dialogBox.textDialog,
-            dialogBox.currentTextIndex < textDialog.count-1 {
-            dialogBox.currentTextIndex += 1
-            dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
+        if let textDialog = dialogContainer?.textDialog,
+            dialogContainer!.currentTextIndex < textDialog.count-1 {
+            dialogContainer?.currentTextIndex += 1
+            dialogContainer?.label.text = dialogContainer?.textDialog[dialogContainer!.currentTextIndex]
         }
         windowController?.customTouchBar = makeTouchBar()
     }
 
     @objc func closeButton(_ sender: NSButton) {
-        dialogBox.showDialog(false)
+        showDialogContainer(false)
         windowController?.customTouchBar = nil
+        scene.addChild(door)
     }
 }

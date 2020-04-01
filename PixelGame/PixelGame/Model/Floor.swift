@@ -13,6 +13,7 @@ class Floor: SKSpriteNode {
         self.init()
         self.position = position
         self.size = size
+        name = NodeName.floor.rawValue
         color = .hexadecimal(hex: 0x804D26)
         zPosition = NodesZPosition.elements.rawValue
         physicsBody = SKPhysicsBody(rectangleOf: size)

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6924263C2434DB3600387526 /* Door.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263B2434DB3600387526 /* Door.swift */; };
+		6924263E2434DF3700387526 /* DialogMessageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263D2434DF3700387526 /* DialogMessageContainer.swift */; };
 		695188F22433BB22009CE601 /* IntroState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695188F12433BB22009CE601 /* IntroState.swift */; };
 		695188F42433BB47009CE601 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695188F32433BB47009CE601 /* GameState.swift */; };
 		695188F62433BB56009CE601 /* BuildRoomState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695188F52433BB56009CE601 /* BuildRoomState.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6924263B2434DB3600387526 /* Door.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Door.swift; sourceTree = "<group>"; };
+		6924263D2434DF3700387526 /* DialogMessageContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogMessageContainer.swift; sourceTree = "<group>"; };
 		695188F12433BB22009CE601 /* IntroState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroState.swift; sourceTree = "<group>"; };
 		695188F32433BB47009CE601 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		695188F52433BB56009CE601 /* BuildRoomState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildRoomState.swift; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 				69A763A424338CA80063BBD0 /* PixelArtObject.swift */,
 				69A763A624338CC10063BBD0 /* Hero.swift */,
 				69A763A824338CDA0063BBD0 /* DialogBox.swift */,
+				6924263D2434DF3700387526 /* DialogMessageContainer.swift */,
+				6924263B2434DB3600387526 /* Door.swift */,
 				69A763AA24338CF30063BBD0 /* KeyCode.swift */,
 				69A763AC24338D050063BBD0 /* Floor.swift */,
 				69A763AE24338D170063BBD0 /* Wall.swift */,
@@ -236,11 +242,13 @@
 				69A763B124338D2B0063BBD0 /* Constants.swift in Sources */,
 				69A7639324338B7F0063BBD0 /* GameViewController.swift in Sources */,
 				69A763B324338D680063BBD0 /* WindowController.swift in Sources */,
+				6924263E2434DF3700387526 /* DialogMessageContainer.swift in Sources */,
 				69A7639124338B7F0063BBD0 /* GameScene.swift in Sources */,
 				69E0F13E2433D24B00E52E12 /* SKScene.swift in Sources */,
 				695188F62433BB56009CE601 /* BuildRoomState.swift in Sources */,
 				695188F42433BB47009CE601 /* GameState.swift in Sources */,
 				69A7638B24338B7F0063BBD0 /* AppDelegate.swift in Sources */,
+				6924263C2434DB3600387526 /* Door.swift in Sources */,
 				69A763B724338D960063BBD0 /* TouchBar.swift in Sources */,
 				69A763A524338CA80063BBD0 /* PixelArtObject.swift in Sources */,
 			);

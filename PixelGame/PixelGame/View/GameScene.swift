@@ -9,7 +9,11 @@
 import SpriteKit
 import GameplayKit
 
-protocol GameSceneDelegate: AnyObject {
+enum NotificationType {
+    case keyDown, keyUp
+}
+
+protocol GameSceneSubscriber: CustomStringConvertible {
     func keyDown(_ gameScene: GameScene, keyCode: KeyCode?)
     func keyUp(_ gameScene: GameScene, keyCode: KeyCode?)
 }
@@ -26,8 +30,6 @@ class GameScene: SKScene {
     
     lazy var gameState = GKStateMachine(states: self.states)
     
-    weak var delegateScene: GameSceneDelegate?
-    
     lazy var controlNode: SKNode = {
         let node = SKNode()
         node.position = CGPoint.zero
@@ -39,7 +41,7 @@ class GameScene: SKScene {
     var directionPressed = KeyCode.none
     var upKey = Key(pressed: false, busy: false, name: .up)
     
-    
+    private lazy var subscribers = [GameSceneSubscriber]()
     
     override func didMove(to view: SKView) {
         gameState.enter(IntroState.self)
@@ -54,16 +56,6 @@ class GameScene: SKScene {
         gameState.currentState?.update(deltaTime: currentTime)
     }
     
-    func customKeyDown(event: NSEvent) -> NSEvent? {
-        delegateScene?.keyDown(self, keyCode: KeyCode(rawValue: event.keyCode))
-        return nil
-    }
-    
-    func customKeyUp(event: NSEvent) -> NSEvent? {
-        delegateScene?.keyUp(self, keyCode: KeyCode(rawValue: event.keyCode))
-        return nil
-    }
-    
     override init(size: CGSize) {
         super.init(size: size)
         NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: customKeyDown(event:))
@@ -72,5 +64,40 @@ class GameScene: SKScene {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+extension GameScene {
+    func customKeyDown(event: NSEvent) -> NSEvent? {
+        notifySubscribers(.keyDown, keyCode: KeyCode(rawValue: event.keyCode))
+        return nil
+    }
+    
+    func customKeyUp(event: NSEvent) -> NSEvent? {
+        notifySubscribers(.keyUp, keyCode: KeyCode(rawValue: event.keyCode))
+        return nil
+    }
+}
+
+extension GameScene {
+    func add(subscriber: GameSceneSubscriber) {
+        print("GameScene: Subscriber added: \(subscriber.description)")
+        subscribers.append(subscriber)
+    }
+    
+    func remove(subscriber filter: (GameSceneSubscriber) -> (Bool)) {
+        guard let index = subscribers.firstIndex(where: filter) else { return }
+        subscribers.remove(at: index)
+    }
+    
+    private func notifySubscribers(_ type: NotificationType?, keyCode: KeyCode?) {
+        switch type {
+        case .keyDown:
+            subscribers.forEach({ $0.keyDown(self, keyCode: keyCode)})
+        case .keyUp:
+            subscribers.forEach({ $0.keyUp(self, keyCode: keyCode)})
+        default:
+            break
+        }
     }
 }

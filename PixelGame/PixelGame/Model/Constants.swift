@@ -21,6 +21,7 @@ enum NodeName: String {
     case messageBox = "messageBox"
     case background = "background"
     case controlNode = "controlNode"
+    case label = "label"
 }
 
 enum NodesZPosition: CGFloat {
