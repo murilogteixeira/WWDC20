@@ -93,6 +93,11 @@ class IntroState: GKState {
         self.scene = nil
     }
     
+    override func update(deltaTime seconds: TimeInterval) {
+        move()
+        jump()
+    }
+    
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
         node.color = .hexadecimal(hex: 0xC9FFFD)
@@ -106,7 +111,6 @@ class IntroState: GKState {
     init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
-        self.gameScene.delegate = self
         self.gameScene.delegateScene = self
         self.gameScene.physicsWorld.contactDelegate = self
     }
@@ -131,14 +135,6 @@ extension IntroState {
             hero.jump()
             hero.isOnTheFloor = false
         }
-    }
-}
-
-// MARK: SKSceneDelegate
-extension IntroState: SKSceneDelegate {
-    func update(_ currentTime: TimeInterval, for scene: SKScene) {
-        move()
-        jump()
     }
 }
 

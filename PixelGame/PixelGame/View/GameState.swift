@@ -46,6 +46,10 @@ class GameState: GKState {
         self.scene = nil
     }
     
+    override func update(deltaTime seconds: TimeInterval) {
+        
+    }
+    
     init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()

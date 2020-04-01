@@ -46,7 +46,7 @@ class GameScene: SKScene {
     
     // MARK: Update
     override func update(_ currentTime: TimeInterval) {
-        delegate?.update?(currentTime, for: self)
+        gameState.currentState?.update(deltaTime: currentTime)
     }
     
     func customKeyDown(event: NSEvent) -> NSEvent? {
