@@ -19,10 +19,12 @@ enum NodeName: String {
     case wall = "wall"
     case dialogBox = "dialogBox"
     case messageBox = "messageBox"
+    case background = "background"
+    case controlNode = "controlNode"
 }
 
 enum NodesZPosition: CGFloat {
-    case background, elements, character, dialog, messageBox, label
+    case background, controlNode, elements, character, dialog, messageBox, label
 }
 
 let c = NSColor.clear

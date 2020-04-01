@@ -9,7 +9,7 @@
 import SpriteKit
 // MARK: Hero
 class Hero: SKSpriteNode {
-    public var walking = false {
+    var walking = false {
         didSet {
             if walking {
                 walkAnimation(true)
@@ -22,7 +22,7 @@ class Hero: SKSpriteNode {
         }
     }
     
-    public var jumping = false {
+    var jumping = false {
         didSet {
             if jumping {
                 texture = jumpingFrame
@@ -87,7 +87,7 @@ class Hero: SKSpriteNode {
     }
     
     //MARK: Moviments
-    func move(direction: KeyName) {
+    func move(direction: KeyCode) {
         switch direction {
         case .left:
             run(.moveTo(x: position.x - velocity, duration: 0))
@@ -126,11 +126,24 @@ class Hero: SKSpriteNode {
             self.removeAction(forKey: "walkingAnimation")
             return
         }
-        let animation = SKAction.animate(with: walkingFrames, timePerFrame: 0.1)
+        let animation = SKAction.animate(with: walkingFrames, timePerFrame: 0.075)
         run(.repeatForever(animation), withKey: "walkingAnimation")
     }
 }
 
+extension Hero: GameSceneDelegate {
+    func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
+        
+    }
+    
+    func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
+        
+    }
+    
+    
+}
+
+// MARK: Format frames
 extension Hero {
     var c: NSColor { .clear } // transparente
     var b: NSColor {.black} // cabelo, maos, pes
@@ -351,13 +364,13 @@ extension Hero {
             [n,n,o,n,b,o,b,n,o],
             [n,n,o,n,b,o,b,n,o],
             [c,n,o,o,o,o,o,o,o],
-            [c,c,n,n,n,n,n,c,c],
-            [b,l,l,r,r,r,r,l,b],
-            [c,c,r,r,y,y,r,c,c],
+            [c,c,n,n,n,n,n,n,c],
+            [c,l,l,r,r,r,r,l,c],
+            [c,b,r,r,y,y,r,b,c],
             [c,c,l,l,y,y,l,c,c],
             [c,c,l,l,l,l,l,c,c],
-            [c,c,c,l,c,l,c,c,c],
-            [c,c,c,b,c,b,c,c,c],
+            [c,c,b,c,b,c,c,c,c],
+            [c,c,c,c,c,c,c,c,c],
         ]
     }
 }

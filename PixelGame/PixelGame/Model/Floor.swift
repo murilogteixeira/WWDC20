@@ -8,19 +8,18 @@
 
 import SpriteKit
 
-class Floor: SKNode {
-    override init() {
-        super.init()
-        position = CGPoint(x: 0, y: -240)
-        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 720, height: 20))
+class Floor: SKSpriteNode {
+    convenience init(size: CGSize, position: CGPoint) {
+        self.init()
+        self.position = position
+        self.size = size
+        color = .hexadecimal(hex: 0x804D26)
+        zPosition = NodesZPosition.elements.rawValue
+        physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody?.isDynamic = false
         physicsBody?.categoryBitMask = CategoryBitmask.floor.rawValue
         physicsBody?.contactTestBitMask = CategoryBitmask.hero.rawValue
         physicsBody?.collisionBitMask = CategoryBitmask.hero.rawValue
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 

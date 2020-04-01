@@ -9,16 +9,13 @@
 import SpriteKit
 
 class Wall: SKNode {
-    override init() {
-        super.init()
-        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 1, height: 480))
+    convenience init(height: CGFloat, positionX: CGFloat) {
+        self.init()
+        position = CGPoint(x: positionX, y: 0)
+        zPosition = NodesZPosition.elements.rawValue
+        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 1, height: height))
         physicsBody?.isDynamic = false
         physicsBody?.categoryBitMask = CategoryBitmask.wall.rawValue
-//        physicsBody?.contactTestBitMask = CategoryBitmask.hero.rawValue
-//        physicsBody?.collisionBitMask = CategoryBitmask.hero.rawValue
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
 }

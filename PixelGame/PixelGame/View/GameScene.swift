@@ -9,295 +9,63 @@
 import SpriteKit
 import GameplayKit
 
+protocol GameSceneDelegate: AnyObject {
+    func keyDown(_ gameScene: GameScene, keyCode: KeyCode?)
+    func keyUp(_ gameScene: GameScene, keyCode: KeyCode?)
+}
+
 //MARK: GameScene
 class GameScene: SKScene {
-
-    lazy var windowController: WindowController? = {
-        if let mainWindow = NSApplication.shared.mainWindow,
-            let windowController = mainWindow.windowController as? WindowController {
-            return windowController
-        }
-        return nil
+    
+    lazy var states = [
+        IntroState(gameScene: self),
+        GameState(gameScene: self),
+        BuildRoomState(gameScene: self),
+        CreditsState(gameScene: self)
+    ]
+    
+    lazy var gameState = GKStateMachine(states: self.states)
+    
+    weak var delegateScene: GameSceneDelegate?
+    
+    lazy var controlNode: SKNode = {
+        let node = SKNode()
+        node.position = CGPoint.zero
+        node.name = NodeName.controlNode.rawValue
+        node.zPosition = NodesZPosition.controlNode.rawValue
+        return node
     }()
     
-    var directionPressed = KeyName.none
-    var upKey = Key(pressed: false, busy: false, name: .up)
-    
-    var heroWalking = false {
-        didSet {
-            if hero.isOnTheFloor {
-                hero.walking = heroWalking
-            }
-        }
-    }
-    
-    var hero = Hero(size: 80)
-    var floor = Floor()
-    var leftWall = Wall()
-    var rightWall = Wall()
-    var dialogBox: DialogBox!
-    
-    var timeSinceLastContactWithFloor: TimeInterval = 0
-    
-    var controller: GameViewController!
-    
-    convenience init(controller: GameViewController) {
-        self.init()
-        self.controller = controller
-        
-        
-    }
-    
     override func didMove(to view: SKView) {
-        physicsWorld.contactDelegate = self
-        backgroundColor = .white
+        gameState.enter(IntroState.self)
+        
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
-        leftWall.position.x = -360
-        rightWall.position.x = 360
-        
-        addChild(hero)
-        addChild(floor)
-        addChild(leftWall)
-        addChild(rightWall)
-        
-        let textDialog = ["Aqui aparecerão as dicas e \ndesafios a serem cumpridos \n\nAs ações podem ser\ncontroladas pelos botões\nna TouchBar.",
-                          "Caso o seu dispositivo não\npossua TouchBar basta\npressionar cmd+shift+8.",
-                          "Teste1",
-                          "Teste2"]
-        dialogBox = DialogBox(position: CGPoint(x: 0, y: -30), size: 30, textDialog: textDialog)
-        addChild(dialogBox)
+        addChild(controlNode)
     }
     
     // MARK: Update
     override func update(_ currentTime: TimeInterval) {
-        move()
-        jump()
+        delegate?.update?(currentTime, for: self)
     }
     
-    override func makeTouchBar() -> NSTouchBar? {
-        let touchBar = NSTouchBar()
-        touchBar.delegate = self
-        touchBar.customizationIdentifier = .touchBarIdentifier
-        
-        let button1: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == 0 ? .button1Disable : .button1
-        let button2: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button2Disable : .button2
-        let button3: NSTouchBarItem.Identifier = dialogBox.currentTextIndex == dialogBox.textDialog!.count - 1 ? .button3 : .button3Disable
-
-            touchBar.defaultItemIdentifiers = [.flexibleSpace, .infoLabelItem, .flexibleSpace, button1, button2, button3, .flexibleSpace, .otherItemsProxy]
-        return touchBar
+    func customKeyDown(event: NSEvent) -> NSEvent? {
+        delegateScene?.keyDown(self, keyCode: KeyCode(rawValue: event.keyCode))
+        return nil
     }
     
-    func setTouchBar() {
-        windowController?.customTouchBar = makeTouchBar()
+    func customKeyUp(event: NSEvent) -> NSEvent? {
+        delegateScene?.keyUp(self, keyCode: KeyCode(rawValue: event.keyCode))
+        return nil
+    }
+    
+    override init(size: CGSize) {
+        super.init(size: size)
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: customKeyDown(event:))
+        NSEvent.addLocalMonitorForEvents(matching: .keyUp, handler: customKeyUp(event:))
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
-
-// MARK: Extensions:
-
-
-
-// MARK: Move/Jump
-extension GameScene {
-    private func move() {
-        switch directionPressed {
-        case .left:
-            hero.move(direction: .left)
-        case .right:
-            hero.move(direction: .right)
-        default:
-            break
-        }
-    }
-    
-    private func jump() {
-        if upKey.pressed && !upKey.busy {
-            upKey.busy = true
-            hero.jump()
-            hero.isOnTheFloor = false
-        }
-    }
-}
-
-// MARK: KeyDown/Up
-extension GameScene {
-    override func keyDown(with event: NSEvent) {
-        let keyDown: KeyName? = KeyName(rawValue: event.keyCode)
-        switch keyDown {
-        case .left:
-            if directionPressed == .none {
-                directionPressed = .left
-                heroWalking = true
-            }
-        case .right:
-            if directionPressed == .none {
-                directionPressed = .right
-                heroWalking = true
-            }
-        case .up:
-            upKey.pressed = true
-        case .enter:
-            dialogBox.showDialog(false)
-            controller.touchBar = nil
-        default:
-            print("keyDown: \(event.characters!) keyCode: \(event.keyCode)")
-        }
-    }
-    
-    override func keyUp(with event: NSEvent) {
-        let keyUp: KeyName? = KeyName(rawValue: event.keyCode)
-        switch keyUp {
-        case .left:
-            if directionPressed == .left {
-                directionPressed = .none
-                heroWalking = false
-            }
-        case .right:
-            if directionPressed == .right {
-                directionPressed = .none
-                heroWalking = false
-            }
-        case .up:
-            upKey.pressed = false
-        case .enter:
-            print("EnterUp")
-        default:
-            print("keyUp: \(event.characters!) keyCode: \(event.keyCode)")
-        }
-    }
-}
-
-// MARK: Touch
-//extension GameScene {
-//    func touchDown(atPoint pos : CGPoint) {
-//        print("touchDown: \(pos)")
-//    }
-//
-//    func touchMoved(toPoint pos : CGPoint) {
-//        print("touchMoved: \(pos)")
-//    }
-//
-//    func touchUp(atPoint pos : CGPoint) {
-//        print("touchUp: \(pos)")
-//    }
-//
-//    override func mouseDown(with event: NSEvent) {
-//        self.touchDown(atPoint: event.location(in: self))
-//    }
-//
-//    override func mouseDragged(with event: NSEvent) {
-//        self.touchMoved(toPoint: event.location(in: self))
-//    }
-//
-//    override func mouseUp(with event: NSEvent) {
-//        self.touchUp(atPoint: event.location(in: self))
-//    }
-//}
-
-// MARK: SKPhysicsContactDelegate
-extension GameScene: SKPhysicsContactDelegate {
-    func didBegin(_ contact: SKPhysicsContact) {
-        let heroCategory = CategoryBitmask.hero.rawValue
-        let floorCategory = CategoryBitmask.floor.rawValue
-        let dialogBoxCategory = CategoryBitmask.dialogBox.rawValue
-        // Contact Hero with Floor
-        if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == floorCategory)) || ((contact.bodyA.categoryBitMask == floorCategory) && (contact.bodyB.categoryBitMask == heroCategory)) {
-
-            if hero.isOnTheFloor == false {
-                hero.walking = heroWalking
-            }
-            hero.isOnTheFloor = true
-            upKey.busy = false
-        }
-        else if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == dialogBoxCategory)) {
-            dialogBox.contact()
-            dialogBox.currentTextIndex = 0
-            dialogBox.showDialog()
-            windowController?.customTouchBar = makeTouchBar()
-        }
-    }
-}
-
-// MARK: NSTouchBarDelegate
-extension GameScene: NSTouchBarDelegate {
-    var fontArrow: NSFont? { NSFont(name: "PressStart2P-Regular", size: 12) }
-    var fontClose: NSFont? { NSFont(name: "PressStart2P-Regular", size: 14) }
-
-    var button1: NSButton {
-        let button = NSButton(title: "<", target: self, action: #selector(prevButton(_:)))
-        button.font = fontArrow
-        button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
-        return button
-    }
-    
-    var button2: NSButton {
-        let button = NSButton(title: ">", target: self, action: #selector(nextButton(_:)))
-        button.font = fontArrow
-        button.bezelColor = NSColor.hexadecimal(hex: 0x17B352)
-        return button
-    }
-    
-    var button3: NSButton {
-        let button = NSButton(title: "x", target: self, action: #selector(closeButton(_:)))
-        button.font = fontClose
-        button.bezelColor = NSColor.hexadecimal(hex: 0xFF5E55)
-        return button
-    }
-
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
-        let custom = NSCustomTouchBarItem(identifier: identifier)
-        
-        switch identifier {
-        case .infoLabelItem:
-            let label = NSTextField(labelWithString: "Pixel Game")
-            label.font = NSFont(name: "PressStart2P-Regular", size: 16)
-            custom.view = label
-        case .button1:
-            custom.view = button1
-        case .button2:
-            custom.view = button2
-        case .button3:
-            custom.view = button3
-        case .button1Disable:
-            let button = button1
-            button.isEnabled = false
-            custom.view = button
-        case .button2Disable:
-            let button = button2
-            button.isEnabled = false
-            custom.view = button
-        case .button3Disable:
-            let button = button3
-            button.isEnabled = false
-            custom.view = button
-        default:
-            return nil
-        }
-
-        return custom
-    }
-
-    @objc func prevButton(_ sender: NSButton) {
-        if dialogBox.currentTextIndex > 0 {
-            dialogBox.currentTextIndex -= 1
-            dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
-        }
-        windowController?.customTouchBar = makeTouchBar()
-    }
-
-    @objc func nextButton(_ sender: NSButton) {
-        if let textDialog = dialogBox.textDialog,
-            dialogBox.currentTextIndex < textDialog.count-1 {
-            dialogBox.currentTextIndex += 1
-            dialogBox.label?.text = dialogBox.textDialog?[dialogBox.currentTextIndex]
-        }
-        windowController?.customTouchBar = makeTouchBar()
-    }
-
-    @objc func closeButton(_ sender: NSButton) {
-        dialogBox.showDialog(false)
-        windowController?.customTouchBar = nil
-    }
-}
-
-

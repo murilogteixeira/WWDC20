@@ -20,11 +20,9 @@ class GameViewController: NSViewController, NSTouchBarDelegate {
 
         if let view = self.skView {
             // Load GameScene
-            scene = GameScene(controller: self)
+            scene = GameScene(size: view.frame.size)
             // Set the scale mode to scale to fit the window
             scene.scaleMode = .aspectFit
-            // Present the scene
-            scene.size = view.frame.size
             view.presentScene(scene)
         
             view.ignoresSiblingOrder = true
@@ -32,6 +30,6 @@ class GameViewController: NSViewController, NSTouchBarDelegate {
             view.showsNodeCount = true
             view.showsPhysics = true
         }
+        
     }
-    
 }

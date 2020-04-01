@@ -33,10 +33,6 @@ class WindowController: NSWindowController {
 }
 
 extension WindowController: NSTouchBarDelegate {
-    fileprivate var button1Name: String { "Previous" }
-    fileprivate var button2Name: String { "Next" }
-    fileprivate var button3Name: String { "Close" }
-
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         let custom = NSCustomTouchBarItem(identifier: identifier)
 

@@ -63,16 +63,19 @@ class DialogBox: SKSpriteNode {
         return dialogContainer
     }
     
-    func showDialog(_ show: Bool = true) {
+    func showDialog(_ show: Bool) {
         guard !dialogIsShow else {
             if !show, let dialog = dialogContainer {
+                let fadeOut = SKAction.fadeOut(withDuration: 0.3)
                 let scaleDown = SKAction.scale(to: 0, duration: 0.3)
                 let positionDown = SKAction.moveTo(y: dialog.position.y - 80, duration: 0.3)
                 let remove = SKAction.run {
                     self.dialogContainer?.removeFromParent()
                     self.dialogContainer = nil
                 }
-                dialog.run(.sequence([scaleDown, positionDown, remove]))
+                dialog.run(fadeOut)
+                dialog.run(scaleDown)
+                dialog.run(.sequence([positionDown, remove]))
                 dialogIsShow = false
             }
             return
@@ -80,10 +83,13 @@ class DialogBox: SKSpriteNode {
         
         dialogIsShow = true
         dialogContainer?.setScale(0)
+        dialogContainer?.alpha = 0
         dialogContainer?.zPosition = NodesZPosition.dialog.rawValue
         addChild(dialogContainer!)
+        let fadeIn = SKAction.fadeIn(withDuration: 0.3)
         let scaleUp = SKAction.scale(to: 1, duration: 0.3)
         let positionUp = SKAction.moveTo(y: dialogContainer!.position.y + 80, duration: 0.3)
+        dialogContainer?.run(fadeIn)
         dialogContainer?.run(scaleUp)
         dialogContainer?.run(positionUp)
     }
