@@ -22,6 +22,14 @@ class Hero: SKSpriteNode {
         }
     }
     
+    var heroIsWalking = false {
+        didSet {
+            if isOnTheFloor {
+                walking = heroIsWalking
+            }
+        }
+    }
+    
     var jumping = false {
         didSet {
             if jumping {
@@ -131,16 +139,45 @@ class Hero: SKSpriteNode {
     }
 }
 
+//MARK: GameSceneDelegate
 extension Hero: GameSceneDelegate {
     func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
-        
+        switch keyCode {
+        case .left:
+            if gameScene.directionPressed == .none {
+                gameScene.directionPressed = .left
+                heroIsWalking = true
+            }
+        case .right:
+            if gameScene.directionPressed == .none {
+                gameScene.directionPressed = .right
+                heroIsWalking = true
+            }
+        case .up:
+            gameScene.upKey.pressed = true
+        default:
+            print("keyCode: \(keyCode?.description ?? "")")
+        }
     }
-    
+
     func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
-        
+        switch keyCode {
+        case .left:
+            if gameScene.directionPressed == .left {
+                gameScene.directionPressed = .none
+                heroIsWalking = false
+            }
+        case .right:
+            if gameScene.directionPressed == .right {
+                gameScene.directionPressed = .none
+                heroIsWalking = false
+            }
+        case .up:
+            gameScene.upKey.pressed = false
+        default:
+            print("keyCode: \(keyCode?.description ?? "")")
+        }
     }
-    
-    
 }
 
 // MARK: Format frames

@@ -36,6 +36,11 @@ class GameScene: SKScene {
         return node
     }()
     
+    var directionPressed = KeyCode.none
+    var upKey = Key(pressed: false, busy: false, name: .up)
+    
+    
+    
     override func didMove(to view: SKView) {
         gameState.enter(IntroState.self)
         

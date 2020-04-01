@@ -14,23 +14,27 @@ class IntroState: GKState {
     unowned let gameScene: GameScene
     var controlNode: SKNode!
     var scene: SKSpriteNode!
-    
-    var directionPressed = KeyCode.none
-    var upKey = Key(pressed: false, busy: false, name: .up)
+//    
+//    var directionPressed = KeyCode.none
+//    var upKey = Key(pressed: false, busy: false, name: .up)
     
     lazy var floor = Floor(size: CGSize(width: self.scene.frame.size.width, height: self.scene.frame.height * 0.15),
                            position: CGPoint(x: 0, y: -self.scene.size.height / 2))
     lazy var leftWall = Wall(height: self.scene.size.height, positionX: -self.scene.size.width / 2)
     lazy var rightWall = Wall(height: self.scene.size.height, positionX: self.scene.size.width / 2)
     
-    lazy var hero = Hero(size: 80)
-    var heroWalking = false {
-        didSet {
-            if hero.isOnTheFloor {
-                hero.walking = heroWalking
-            }
-        }
-    }
+    lazy var hero: Hero = {
+        let hero = Hero(size: 80)
+        self.gameScene.delegateScene = hero
+        return hero
+    }()
+//    var heroWalking = false {
+//        didSet {
+//            if hero.isOnTheFloor {
+//                hero.walking = heroWalking
+//            }
+//        }
+//    }
     
     lazy var dialogBox: DialogBox = {
         let textDialog = [
@@ -111,7 +115,6 @@ class IntroState: GKState {
     init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
-        self.gameScene.delegateScene = self
         self.gameScene.physicsWorld.contactDelegate = self
     }
 }
@@ -119,7 +122,7 @@ class IntroState: GKState {
 // MARK: Move/Jump
 extension IntroState {
     private func move() {
-        switch directionPressed {
+        switch gameScene.directionPressed {
         case .left:
             hero.move(direction: .left)
         case .right:
@@ -130,79 +133,12 @@ extension IntroState {
     }
 
     private func jump() {
-        if upKey.pressed && !upKey.busy {
-            upKey.busy = true
+        if gameScene.upKey.pressed && !gameScene.upKey.busy {
+            gameScene.upKey.busy = true
             hero.jump()
             hero.isOnTheFloor = false
         }
     }
-}
-
-// MARK: GameSceneDelegate
-extension IntroState: GameSceneDelegate {
-    func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
-        switch keyCode {
-        case .left:
-            if directionPressed == .none {
-                directionPressed = .left
-                heroWalking = true
-            }
-        case .right:
-            if directionPressed == .none {
-                directionPressed = .right
-                heroWalking = true
-            }
-        case .up:
-            upKey.pressed = true
-        case .enter:
-            dialogBox.showDialog(false)
-            windowController?.touchBar = nil
-        default:
-            print("keyCode: \(keyCode?.description ?? "")")
-        }
-    }
-
-    func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
-        switch keyCode {
-        case .left:
-            if directionPressed == .left {
-                directionPressed = .none
-                heroWalking = false
-            }
-        case .right:
-            if directionPressed == .right {
-                directionPressed = .none
-                heroWalking = false
-            }
-        case .up:
-            upKey.pressed = false
-        case .enter:
-            print("EnterUp")
-        default:
-            print("keyCode: \(keyCode?.description ?? "")")
-        }
-    }
-
-//    func didBegin(_ contact: SKPhysicsContact) {
-//        let heroCategory = CategoryBitmask.hero.rawValue
-//        let floorCategory = CategoryBitmask.floor.rawValue
-//        let dialogBoxCategory = CategoryBitmask.dialogBox.rawValue
-//        // Contact Hero with Floor
-//        if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == floorCategory)) || ((contact.bodyA.categoryBitMask == floorCategory) && (contact.bodyB.categoryBitMask == heroCategory)) {
-//
-//            if hero.isOnTheFloor == false {
-//                hero.walking = heroWalking
-//            }
-//            hero.isOnTheFloor = true
-//            upKey.busy = false
-//        }
-//        else if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == dialogBoxCategory)) {
-//            dialogBox.contact()
-//            dialogBox.currentTextIndex = 0
-//            dialogBox.showDialog(true)
-//            gameScene.windowController?.customTouchBar = makeTouchBar()
-//        }
-//    }
 }
 
 extension IntroState: SKPhysicsContactDelegate {
@@ -214,10 +150,10 @@ extension IntroState: SKPhysicsContactDelegate {
         if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == floorCategory)) || ((contact.bodyA.categoryBitMask == floorCategory) && (contact.bodyB.categoryBitMask == heroCategory)) {
 
             if hero.isOnTheFloor == false {
-                hero.walking = heroWalking
+                hero.walking = hero.heroIsWalking
             }
             hero.isOnTheFloor = true
-            upKey.busy = false
+            gameScene.upKey.busy = false
         }
         else if ((contact.bodyA.categoryBitMask == heroCategory) && (contact.bodyB.categoryBitMask == dialogBoxCategory)) {
             dialogBox.contact()
