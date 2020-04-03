@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+
 // MARK: Hero
 class Hero: SKSpriteNode {
     var walking = false {
@@ -35,18 +36,14 @@ class Hero: SKSpriteNode {
     var jumping = false {
         didSet {
             if jumping {
-//                isOnTheFloor = false
                 texture = jumpingFrame
                 walkAnimation(false)
                 stopAnimation(false)
             }
-            else {
-//                isOnTheFloor = true
-//                print("jumping stopped")
-            }
         }
     }
     
+    //MARK: Frames
     private lazy var stoppedFrames: [SKTexture] = {
         var textures = [SKTexture]()
         for i in 0..<stoppedFramesFormat.count {
@@ -67,6 +64,7 @@ class Hero: SKSpriteNode {
         return PixelArtObject(format: jumpingFrameFormat, size: self.size).objectTexture
     }()
     
+    // MARK: Inicial settings
     lazy var initialPosition: CGPoint = {
         CGPoint(x: 360 * -0.8, y: 240 * -0.5)
     }()
@@ -90,20 +88,27 @@ class Hero: SKSpriteNode {
         self.name = NodeName.hero.rawValue
         self.zPosition = NodesZPosition.character.rawValue
         
+        setupPhysicsBody()
+        stopAnimation(true)
+    }
+    
+    // MARK: SetuPhysicsBody
+    func setupPhysicsBody() {
         let heroCategory = CategoryBitmask.hero.rawValue
         let floorCategory = CategoryBitmask.floor.rawValue
         let dialogBoxCategory = CategoryBitmask.dialogBox.rawValue
+        let wallCategory = CategoryBitmask.wall.rawValue
         
         physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: self.size.width * 0.6, height: self.size.height))
         physicsBody?.categoryBitMask = heroCategory
         physicsBody?.contactTestBitMask = floorCategory | dialogBoxCategory
-        physicsBody?.collisionBitMask = floorCategory
+        physicsBody?.collisionBitMask = floorCategory | wallCategory
         physicsBody?.allowsRotation = false
-        
-        stopAnimation(true)
     }
-    
-    //MARK: Moviments
+}
+
+//MARK: Moviments
+extension Hero {
     func move(direction: KeyCode) {
         switch direction {
         case .left:
@@ -121,23 +126,16 @@ class Hero: SKSpriteNode {
         if canJump {
             canJump = false
             jumping = true
-//            isOnTheFloor = false
             physicsBody?.applyImpulse(CGVector(dx: 0, dy: 110))
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
                 self.canJump = true
             }
         }
     }
+}
 
-//    private func jump() {
-//        if gameScene.upKey.pressed && !gameScene.upKey.busy {
-//            gameScene.upKey.busy = true
-//            hero.jump()
-//            hero.isOnTheFloor = false
-//        }
-//    }
-    
-    // MARK: Animations
+// MARK: Animations
+extension Hero {
     private func stopAnimation(_ actived: Bool) {
         guard actived else {
             removeAction(forKey: "stoppedAnimation")
@@ -158,7 +156,7 @@ class Hero: SKSpriteNode {
 }
 
 //MARK: GameSceneDelegate
-extension Hero: GameSceneSubscriber {
+extension Hero: GameSceneDelegate {
     func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
@@ -175,7 +173,7 @@ extension Hero: GameSceneSubscriber {
             gameScene.upKey.pressed = true
             jump()
         default:
-            print("keyCode: \(keyCode?.description ?? "")")
+            print("Key not configured")
         }
     }
 
@@ -194,12 +192,12 @@ extension Hero: GameSceneSubscriber {
         case .up:
             gameScene.upKey.pressed = false
         default:
-            print("keyCode: \(keyCode?.description ?? "")")
+            break
         }
     }
 }
 
-// MARK: Format frames
+// MARK: Format
 extension Hero {
     var c: NSColor { .clear } // transparente
     var b: NSColor {.black} // cabelo, maos, pes

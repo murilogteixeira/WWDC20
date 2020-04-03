@@ -9,24 +9,27 @@
 import SpriteKit
 
 enum CategoryBitmask: UInt32 {
-    case hero, enemy, floor, wall, dialogBox
+    case none, hero, enemy, floor, wall, dialogBox
 }
 
 enum NodeName: String {
-    case hero = "hero"
-    case enemy = "enemy"
-    case floor = "floor"
-    case wall = "wall"
-    case dialogBox = "dialogBox"
-    case messageBox = "messageBox"
-    case background = "background"
-    case controlNode = "controlNode"
-    case label = "label"
+    case hero, enemy, floor, wall, dialogBox, messageBox, background, controlNode, label
 }
 
 enum NodesZPosition: CGFloat {
-    case background, controlNode, elements, character, dialog, messageBox, label
+    case background, controlNode, elements, character, dialog, floor, messageBox, label
 }
+
+struct TouchBarConstants {
+    enum NodeZPosition: CGFloat {
+        case background
+    }
+    enum Name: String {
+        case background
+    }
+}
+
+let kFontName = "PressStart2P-Regular"
 
 let c = NSColor.clear
 let b = NSColor.black
@@ -36,10 +39,6 @@ let l = NSColor.lightGray
 let g = NSColor.hexadecimal(hex: 0xf6b73d)
 
 public struct Constants {
-    public struct Character {
-        
-    }
-    
     public struct Elements {
         static let MessageBox = [
             [c,c,c,c,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,c,c,c,c],
@@ -59,19 +58,3 @@ public struct Constants {
         ]
     }
 }
-
-let heart: [[NSColor]] = {
-    let b = NSColor.white
-    let f = NSColor.red
-    let c = NSColor.clear
-    return [
-        [c,c,b,c,c,c,b,c,c],
-        [c,b,f,b,c,b,f,b,c],
-        [b,f,f,f,b,f,f,f,b],
-        [c,b,f,f,f,f,f,b,c],
-        [c,c,b,f,f,f,b,c,c],
-        [c,c,c,b,f,b,c,c,c],
-        [c,c,c,c,b,c,c,c,c]
-    ]
-}()
-

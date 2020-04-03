@@ -14,13 +14,17 @@ class Floor: SKSpriteNode {
         self.position = position
         self.size = size
         name = NodeName.floor.rawValue
-        color = .hexadecimal(hex: 0x804D26)
-        zPosition = NodesZPosition.elements.rawValue
+        color = .hexadecimal(hex: 0x957359) //804D26
+        zPosition = NodesZPosition.floor.rawValue
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody?.isDynamic = false
-        physicsBody?.categoryBitMask = CategoryBitmask.floor.rawValue
-        physicsBody?.contactTestBitMask = CategoryBitmask.hero.rawValue
-        physicsBody?.collisionBitMask = CategoryBitmask.hero.rawValue
+                
+        let heroCategory = CategoryBitmask.hero.rawValue
+        let floorCategory = CategoryBitmask.floor.rawValue
+        
+        physicsBody?.categoryBitMask = floorCategory
+        physicsBody?.contactTestBitMask = heroCategory
+        physicsBody?.collisionBitMask = heroCategory
     }
 }
 

@@ -9,11 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-enum NotificationType {
-    case keyDown, keyUp
-}
-
-protocol GameSceneSubscriber: CustomStringConvertible {
+protocol GameSceneDelegate: AnyObject {
     func keyDown(_ gameScene: GameScene, keyCode: KeyCode?)
     func keyUp(_ gameScene: GameScene, keyCode: KeyCode?)
 }
@@ -41,7 +37,7 @@ class GameScene: SKScene {
     var directionPressed = KeyCode.none
     var upKey = Key(pressed: false, busy: false, name: .up)
     
-    private lazy var subscribers = [GameSceneSubscriber]()
+    weak var delegateScene: GameSceneDelegate?
     
     override func didMove(to view: SKView) {
         gameState.enter(IntroState.self)
@@ -67,37 +63,15 @@ class GameScene: SKScene {
     }
 }
 
+// MARK: CustomKeyDown/Up
 extension GameScene {
     func customKeyDown(event: NSEvent) -> NSEvent? {
-        notifySubscribers(.keyDown, keyCode: KeyCode(rawValue: event.keyCode))
+        delegateScene?.keyDown(self, keyCode: KeyCode(rawValue: event.keyCode))
         return nil
     }
     
     func customKeyUp(event: NSEvent) -> NSEvent? {
-        notifySubscribers(.keyUp, keyCode: KeyCode(rawValue: event.keyCode))
+        delegateScene?.keyUp(self, keyCode: KeyCode(rawValue: event.keyCode))
         return nil
-    }
-}
-
-extension GameScene {
-    func add(subscriber: GameSceneSubscriber) {
-        print("GameScene: Subscriber added: \(subscriber.description)")
-        subscribers.append(subscriber)
-    }
-    
-    func remove(subscriber filter: (GameSceneSubscriber) -> (Bool)) {
-        guard let index = subscribers.firstIndex(where: filter) else { return }
-        subscribers.remove(at: index)
-    }
-    
-    private func notifySubscribers(_ type: NotificationType?, keyCode: KeyCode?) {
-        switch type {
-        case .keyDown:
-            subscribers.forEach({ $0.keyDown(self, keyCode: keyCode)})
-        case .keyUp:
-            subscribers.forEach({ $0.keyUp(self, keyCode: keyCode)})
-        default:
-            break
-        }
     }
 }

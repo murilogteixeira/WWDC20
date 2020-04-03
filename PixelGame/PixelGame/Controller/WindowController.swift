@@ -7,38 +7,54 @@
 //
 
 import Cocoa
+import SpriteKit
 
 class WindowController: NSWindowController {
+    static var shared: WindowController?
     
-    var customTouchBar: NSTouchBar? {
+    var touchBarView = SKView(frame: NSRect(x: 0, y: 0, width: 685, height: 30))
+    var touchBarManager = TouchBarManager()
+    var touchBarItemsIdentifier: [NSTouchBarItem.Identifier] = [.view] {
         didSet {
-            touchBar = customTouchBar
+            touchBar = makeTouchBar()
         }
+    }
+
+    @objc func teste() {
+        print("teste")
     }
 
     override func windowDidLoad() {
         super.windowDidLoad()
-    
-        // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
-        touchBar?.delegate = self
     }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        WindowController.shared = self
+    }
+}
+
+extension WindowController: NSTouchBarDelegate {
     
     override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
         touchBar.customizationIdentifier = .touchBarIdentifier
-        touchBar.defaultItemIdentifiers = [.flexibleSpace, .infoLabelItem, .flexibleSpace]
+        touchBar.defaultItemIdentifiers = touchBarItemsIdentifier
         return touchBar
     }
-}
-
-extension WindowController: NSTouchBarDelegate {
+    
     func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         let custom = NSCustomTouchBarItem(identifier: identifier)
-
-        let label = NSTextField(labelWithString: "Pixel Game")
-        label.font = NSFont(name: "PressStart2P-Regular", size: 16)
-        custom.view = label
+        
+        switch identifier {
+        case .view:
+            touchBarView.presentScene(TouchBarScene(size: touchBarView.frame.size))
+            touchBarView.showsNodeCount = true
+            custom.view = touchBarView
+        default:
+            return nil
+        }
         
         return custom
     }

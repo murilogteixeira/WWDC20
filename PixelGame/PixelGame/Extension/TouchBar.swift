@@ -9,6 +9,8 @@
 import Cocoa
 
 extension NSTouchBarItem.Identifier {
+    static let view = NSTouchBarItem.Identifier("com.murilo.View")
+    static let buttons = NSTouchBarItem.Identifier("com.murilo.Buttons")
     static let infoLabelItem = NSTouchBarItem.Identifier("com.murilo.Label")
     static let button1 = NSTouchBarItem.Identifier("com.murilo.Button1")
     static let button2 = NSTouchBarItem.Identifier("com.murilo.Button2")
