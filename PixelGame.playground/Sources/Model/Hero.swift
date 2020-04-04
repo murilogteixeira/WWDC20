@@ -9,7 +9,7 @@
 import SpriteKit
 
 // MARK: Hero
-class Hero: SKSpriteNode {
+public class Hero: SKSpriteNode {
     var walking = false {
         didSet {
             if !jumping {
@@ -39,10 +39,6 @@ class Hero: SKSpriteNode {
                 texture = jumpingFrame
                 walkAnimation(false)
                 stopAnimation(false)
-                velocity = 6
-            }
-            else {
-                velocity = 5
             }
         }
     }
@@ -73,7 +69,7 @@ class Hero: SKSpriteNode {
         CGPoint(x: 360 * -0.8, y: 240 * -0.5)
     }()
     
-    var velocity: CGFloat = 5
+    let velocity: CGFloat = 5
     var isOnTheFloor = false {
         didSet {
             if isOnTheFloor {
@@ -163,7 +159,7 @@ extension Hero {
 
 //MARK: GameSceneDelegate
 extension Hero: GameSceneDelegate {
-    func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
+    public func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
             if gameScene.directionPressed == .none {
@@ -183,7 +179,7 @@ extension Hero: GameSceneDelegate {
         }
     }
 
-    func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
+    public func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
             if gameScene.directionPressed == .left {

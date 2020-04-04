@@ -1,0 +1,24 @@
+//
+//  Color.swift
+//  PixelGame
+//
+//  Created by Murilo Teixeira on 31/03/20.
+//  Copyright © 2020 Murilo Teixeira. All rights reserved.
+//
+
+import SpriteKit
+
+extension NSColor {
+    class func hexadecimal(hex: Int, alpha: CGFloat = 1) -> NSColor {
+        let R = CGFloat((hex >> 16) & 0xff) / 255
+        let G = CGFloat((hex >> 08) & 0xff) / 255
+        let B = CGFloat((hex >> 00) & 0xff) / 255
+        return NSColor(red: R, green: G, blue: B, alpha: alpha)
+    }
+}
+
+extension CGColor {
+    class func colorWithHex(hex: Int) -> CGColor {
+        return NSColor.hexadecimal(hex: hex).cgColor
+    }
+}

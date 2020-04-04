@@ -10,7 +10,7 @@ import Cocoa
 import SpriteKit
 import GameplayKit
 
-class DialogMenuState: GKState {
+public class DialogMenuState: GKState {
     unowned let touchBarScene: TouchBarScene
     lazy var scene: SKShapeNode = touchBarScene.sceneTB
     
@@ -57,7 +57,7 @@ class DialogMenuState: GKState {
         return view
     }()
     
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
+    public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is IdleState.Type:
             return true
@@ -66,11 +66,12 @@ class DialogMenuState: GKState {
         }
     }
     
-    override func didEnter(from previousState: GKState?) {
+    public override func didEnter(from previousState: GKState?) {
+        scene.fillColor = .black
         showButtons()
     }
     
-    override func willExit(to nextState: GKState) {
+    public override func willExit(to nextState: GKState) {
         hiddeButtons()
     }
     
@@ -82,7 +83,6 @@ class DialogMenuState: GKState {
 
 extension DialogMenuState {
     func showButtons() {
-        touchBarScene.toAlert()
         touchBarScene.moveLabel { [weak self] in
             guard let state = self else { return }
             GameViewController.shared?.touchBarView.addSubview(state.prevButton)

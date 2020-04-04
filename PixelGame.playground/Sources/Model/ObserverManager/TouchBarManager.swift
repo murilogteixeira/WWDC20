@@ -15,7 +15,6 @@ protocol TouchBarSubscriber: CustomStringConvertible {
     func prevButtonPressed()
     func nextButtonPressed()
     func closeButtonPressed()
-    func confirmButtonPressed()
 }
 
 extension TouchBarSubscriber {
@@ -24,7 +23,6 @@ extension TouchBarSubscriber {
     func prevButtonPressed() {}
     func nextButtonPressed() {}
     func closeButtonPressed() {}
-    func confirmButtonPressed() {}
 }
 
 protocol TouchBarManagerProtocol: ObserverManager {
@@ -32,10 +30,10 @@ protocol TouchBarManagerProtocol: ObserverManager {
 }
 
 enum TouchBarNotificationType {
-    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton
+    case none, didBegin, didEnded, prevButton, nextButton, closeButton
 }
 
-class TouchBarManager: TouchBarManagerProtocol {
+public class TouchBarManager: TouchBarManagerProtocol {
     
     internal var subscribers: [TouchBarSubscriber] = []
     
@@ -45,19 +43,19 @@ class TouchBarManager: TouchBarManagerProtocol {
         }
     }
     
-    func add<T>(subscriber: T) {
+    public func add<T>(subscriber: T) {
         guard let subscriber = subscriber as? TouchBarSubscriber else { return }
         subscribers.append(subscriber)
         print("TouchBarManager: Subscriber added: \(subscriber)")
     }
     
-    func remove<T>(subscriber filter: T) {
+    public func remove<T>(subscriber filter: T) {
         guard let filter = filter as? (TouchBarSubscriber) -> Bool,
             let index = subscribers.firstIndex(where: filter) else { return }
         subscribers.remove(at: index)
     }
     
-    func notifySubscribers() {
+    public func notifySubscribers() {
         switch notificationType {
         case .didBegin:
             subscribers.forEach({$0.didBegin()})
@@ -69,8 +67,6 @@ class TouchBarManager: TouchBarManagerProtocol {
             subscribers.forEach({$0.nextButtonPressed()})
         case .closeButton:
             subscribers.forEach({$0.closeButtonPressed()})
-        case .confirmButton:
-            subscribers.forEach({$0.confirmButtonPressed()})
         default:
             break
         }
@@ -94,9 +90,5 @@ class TouchBarManager: TouchBarManagerProtocol {
     
     func closeButton() {
         notificationType = .closeButton
-    }
-    
-    func confirmButton() {
-        notificationType = .confirmButton
     }
 }

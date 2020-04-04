@@ -8,19 +8,19 @@
 
 import SpriteKit
 
-enum CategoryBitmask: UInt32 {
+public enum CategoryBitmask: UInt32 {
     case none, hero, enemy, floor, wall, dialogBox, door
 }
 
-enum NodeName: String {
-    case hero, enemy, floor, wall, dialogBox, messageBox, background, controlNode, label, door
+public enum NodeName: String {
+    case hero, enemy, floor, wall, dialogBox, messageBox, background, controlNode, label, door, touchBarScene
 }
 
-enum NodesZPosition: CGFloat {
+public enum NodesZPosition: CGFloat {
     case background, controlNode, elements, door, character, dialog, floor, messageBox, label
 }
 
-struct TouchBarConstants {
+public struct TouchBarConstants {
     enum NodeZPosition: CGFloat {
         case background
     }
@@ -29,14 +29,14 @@ struct TouchBarConstants {
     }
 }
 
-let kFontName = "PressStart2P-Regular"
+public let kFontName = "PressStart2P-Regular"
 
-let c = NSColor.clear
-let b = NSColor.black
-let w = NSColor.white
-let d = NSColor.darkGray
-let l = NSColor.lightGray
-let g = NSColor.hexadecimal(hex: 0xf6b73d)
+public let c = NSColor.clear
+public let b = NSColor.black
+public let w = NSColor.white
+public let d = NSColor.darkGray
+public let l = NSColor.lightGray
+public let g = NSColor.hexadecimal(hex: 0xf6b73d)
 
 public struct Constants {
     public struct Elements {

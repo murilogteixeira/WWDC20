@@ -9,40 +9,18 @@
 import SpriteKit
 import GameplayKit
 
-//{
-//    var timer: Timer?
-//    var green = true
-//
-//    lazy var node = SKSpriteNode(color: .green, size: self.frame.size)
-//
-//    override func didMove(to view: SKView) {
-//        timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(onFiresTime), userInfo: nil, repeats: true)
-//    }
-//
-//    @objc func onFiresTime() {
-//        if green {
-//            green = !green
-//            backgroundColor = .green
-//        }
-//        else {
-//            green = !green
-//            backgroundColor = .red
-//        }
-//    }
-//}
-
 protocol TouchBarSceneDelegate: AnyObject {
     func touchesBegan(with event: NSEvent)
     func touchesEnded(with event: NSEvent)
 }
 
-class TouchBarScene: SKScene {
+public class TouchBarScene: SKScene {
     static var shared: TouchBarScene?
     static var showAlert = true
     
     weak var delegateTB: TouchBarSceneDelegate?
     
-    lazy var stateMachine = GKStateMachine(states: self.states)
+    public lazy var stateMachine = GKStateMachine(states: states)
     
     private lazy var states = [
         IdleState(touchBarScene: self),
@@ -72,7 +50,7 @@ class TouchBarScene: SKScene {
     }()
 
     // MARK: didMove
-    override func didMove(to view: SKView) {
+    public override func didMove(to view: SKView) {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         addChild(sceneTB)
         backgroundColor = .black
@@ -80,13 +58,14 @@ class TouchBarScene: SKScene {
         stateMachine.enter(IdleState.self)
     }
     
-    override func update(_ currentTime: TimeInterval) {
+    public override func update(_ currentTime: TimeInterval) {
         stateMachine.currentState?.update(deltaTime: currentTime)
     }
     
-    override init(size: CGSize) {
+    public override init(size: CGSize) {
         super.init(size: size)
         TouchBarScene.shared = self
+        name = NodeName.touchBarScene.rawValue
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -109,23 +88,5 @@ extension TouchBarScene {
         let move = SKAction.moveTo(x: 0, duration: 1)
         move.timingMode = .easeInEaseOut
         label.run(move)
-    }
-    
-    func toAlert() {
-        let colors: [NSColor] = [.white, .black]
-        var i = 0
-        let color1: SKAction = .run { [weak self] in
-            guard let scene = self else { return }
-            scene.sceneTB.fillColor = colors[i]
-            i += 1
-        }
-        let color2: SKAction = .run { [weak self] in
-            guard let scene = self else { return }
-            scene.sceneTB.fillColor = colors[i]
-            i -= 1
-        }
-        let wait: SKAction = .wait(forDuration: 0.05)
-        let sequence: [SKAction] = [color1, wait, color2, wait, color1, wait, color2]
-        sceneTB.run(.sequence(sequence))
     }
 }

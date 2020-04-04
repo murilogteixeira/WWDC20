@@ -24,7 +24,7 @@ class GameScene: SKScene {
         CreditsState(gameScene: self)
     ]
     
-    lazy var gameState = GKStateMachine(states: self.states)
+    lazy var stateMachine = GKStateMachine(states: self.states)
     
     lazy var controlNode: SKNode = {
         let node = SKNode()
@@ -39,17 +39,34 @@ class GameScene: SKScene {
     
     weak var delegateScene: GameSceneDelegate?
     
+    lazy var floor = Floor(size: CGSize(width: frame.size.width, height: frame.height * 0.15),
+                           position: CGPoint(x: 0, y: -size.height / 2))
+    lazy var leftWall = Wall(height: size.height, positionX: -size.width / 2)
+    lazy var rightWall = Wall(height: size.height, positionX: size.width / 2)
+    
+    lazy var hero: Hero = {
+        let hero = Hero(size: 80)
+        delegateScene = hero
+        return hero
+    }()
+    
     override func didMove(to view: SKView) {
-        gameState.enter(IntroState.self)
-        
+//        stateMachine.enter(IntroState.self)
+        stateMachine.enter(GameState.self)
+
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
         addChild(controlNode)
+        
+        controlNode.addChild(leftWall)
+        controlNode.addChild(rightWall)
+        controlNode.addChild(floor)
+
     }
     
     // MARK: Update
     override func update(_ currentTime: TimeInterval) {
-        gameState.currentState?.update(deltaTime: currentTime)
+        stateMachine.currentState?.update(deltaTime: currentTime)
     }
     
     override init(size: CGSize) {

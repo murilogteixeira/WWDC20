@@ -12,8 +12,8 @@ import GameplayKit
 
 class CreditsState: GKState {
     unowned let gameScene: GameScene
-    var controlNode: SKNode!
-    var scene: SKSpriteNode!
+    lazy var controlNode: SKNode = gameScene.controlNode
+    lazy var scene: SKSpriteNode = buildScene()
     
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
@@ -25,14 +25,7 @@ class CreditsState: GKState {
     }
     
     override func didEnter(from previousState: GKState?) {
-        controlNode = gameScene.controlNode
-        
-        scene = SKSpriteNode()
-        scene.size = gameScene.size
-        scene.zPosition = NodesZPosition.background.rawValue
-        scene.name = NodeName.background.rawValue
-        
-        controlNode?.addChild(scene)
+        controlNode.addChild(scene)
         
         scene.addChild(SKNode())
     }
@@ -40,12 +33,19 @@ class CreditsState: GKState {
     override func willExit(to nextState: GKState) {
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
-        self.controlNode = nil
-        self.scene = nil
     }
     
     override func update(deltaTime seconds: TimeInterval) {
         
+    }
+    
+    func buildScene() -> SKSpriteNode {
+        let node = SKSpriteNode()
+        node.color = .hexadecimal(hex: 0xC9FFFD)
+        node.size = gameScene.size
+        node.zPosition = NodesZPosition.background.rawValue
+        node.name = NodeName.background.rawValue
+        return node
     }
     
     init(gameScene: GameScene) {

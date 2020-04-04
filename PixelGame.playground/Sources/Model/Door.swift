@@ -10,7 +10,6 @@ import Cocoa
 import SpriteKit
 
 public class Door: SKSpriteNode {
-    var isShow = false
     var canOpen = false {
         didSet {
             if canOpen {
