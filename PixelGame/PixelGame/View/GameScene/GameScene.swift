@@ -15,7 +15,7 @@ protocol GameSceneDelegate: AnyObject {
 }
 
 //MARK: GameScene
-class GameScene: SKScene {
+public class GameScene: SKScene {
     
     lazy var states = [
         IntroState(gameScene: self),
@@ -50,7 +50,7 @@ class GameScene: SKScene {
         return hero
     }()
     
-    override func didMove(to view: SKView) {
+    public override func didMove(to view: SKView) {
 //        stateMachine.enter(IntroState.self)
         stateMachine.enter(GameState.self)
 
@@ -65,17 +65,17 @@ class GameScene: SKScene {
     }
     
     // MARK: Update
-    override func update(_ currentTime: TimeInterval) {
+    public override func update(_ currentTime: TimeInterval) {
         stateMachine.currentState?.update(deltaTime: currentTime)
     }
     
-    override init(size: CGSize) {
+    public override init(size: CGSize) {
         super.init(size: size)
         NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: customKeyDown(event:))
         NSEvent.addLocalMonitorForEvents(matching: .keyUp, handler: customKeyUp(event:))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }

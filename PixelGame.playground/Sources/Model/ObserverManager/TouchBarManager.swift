@@ -15,6 +15,7 @@ protocol TouchBarSubscriber: CustomStringConvertible {
     func prevButtonPressed()
     func nextButtonPressed()
     func closeButtonPressed()
+    func confirmButtonPressed()
 }
 
 extension TouchBarSubscriber {
@@ -23,6 +24,7 @@ extension TouchBarSubscriber {
     func prevButtonPressed() {}
     func nextButtonPressed() {}
     func closeButtonPressed() {}
+    func confirmButtonPressed() {}
 }
 
 protocol TouchBarManagerProtocol: ObserverManager {
@@ -30,7 +32,7 @@ protocol TouchBarManagerProtocol: ObserverManager {
 }
 
 enum TouchBarNotificationType {
-    case none, didBegin, didEnded, prevButton, nextButton, closeButton
+    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton
 }
 
 public class TouchBarManager: TouchBarManagerProtocol {
@@ -67,28 +69,34 @@ public class TouchBarManager: TouchBarManagerProtocol {
             subscribers.forEach({$0.nextButtonPressed()})
         case .closeButton:
             subscribers.forEach({$0.closeButtonPressed()})
+        case .confirmButton:
+            subscribers.forEach({$0.confirmButtonPressed()})
         default:
             break
         }
     }
     
-    func didBegin() {
+    public func didBegin() {
         notificationType = .didBegin
     }
     
-    func didEnded() {
+    public func didEnded() {
         notificationType = .didEnded
     }
     
-    func prevButton() {
+    public func prevButton() {
         notificationType = .prevButton
     }
     
-    func nextButton() {
+    public func nextButton() {
         notificationType = .nextButton
     }
     
-    func closeButton() {
+    public func closeButton() {
         notificationType = .closeButton
+    }
+    
+    public func confirmButton() {
+        notificationType = .confirmButton
     }
 }

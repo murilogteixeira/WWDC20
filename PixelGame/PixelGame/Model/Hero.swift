@@ -9,7 +9,7 @@
 import SpriteKit
 
 // MARK: Hero
-class Hero: SKSpriteNode {
+public class Hero: SKSpriteNode {
     var walking = false {
         didSet {
             if !jumping {

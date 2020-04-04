@@ -10,11 +10,11 @@ import Cocoa
 import SpriteKit
 import GameplayKit
 
-class IdleState: GKState {
+public class IdleState: GKState {
     unowned let touchBarScene: TouchBarScene
     lazy var scene: SKShapeNode = self.touchBarScene.sceneTB
     
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
+    public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is DialogMenuState.Type:
             return true
@@ -27,11 +27,11 @@ class IdleState: GKState {
         }
     }
     
-    override func didEnter(from previousState: GKState?) {
+    public override func didEnter(from previousState: GKState?) {
         touchBarScene.resetLabel()
     }
     
-    override func willExit(to nextState: GKState) {
+    public override func willExit(to nextState: GKState) {
         
     }
     

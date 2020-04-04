@@ -59,14 +59,14 @@ public class DialogMessageContainer: SKSpriteNode {
 extension DialogMessageContainer {
     func show(in scene: SKSpriteNode) {
         GameViewController.shared?.touchBarManager.add(subscriber: self)
-//        if TouchBarScene.showAlert {
-//            TouchBarScene.shared?.stateMachine.enter(AlertState.self)
-//            TouchBarScene.showAlert = false
-//        }
-//        else {
-//            TouchBarScene.shared?.stateMachine.enter(DialogMenuState.self)
-//        }
-        TouchBarScene.shared?.stateMachine.enter(DialogMenuState.self)
+        if TouchBarScene.showAlert {
+            TouchBarScene.shared?.stateMachine.enter(AlertState.self)
+            TouchBarScene.showAlert = false
+        }
+        else {
+            TouchBarScene.shared?.stateMachine.enter(DialogMenuState.self)
+        }
+
         currentTextIndex = 0
         isShow = true
         alpha = 0

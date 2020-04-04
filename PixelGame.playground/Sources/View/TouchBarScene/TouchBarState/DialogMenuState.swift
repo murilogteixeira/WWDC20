@@ -67,7 +67,6 @@ public class DialogMenuState: GKState {
     }
     
     public override func didEnter(from previousState: GKState?) {
-        scene.fillColor = .black
         showButtons()
     }
     
@@ -83,6 +82,7 @@ public class DialogMenuState: GKState {
 
 extension DialogMenuState {
     func showButtons() {
+        touchBarScene.toAlert()
         touchBarScene.moveLabel { [weak self] in
             guard let state = self else { return }
             GameViewController.shared?.touchBarView.addSubview(state.prevButton)

@@ -35,7 +35,7 @@ enum TouchBarNotificationType {
     case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton
 }
 
-class TouchBarManager: TouchBarManagerProtocol {
+public class TouchBarManager: TouchBarManagerProtocol {
     
     internal var subscribers: [TouchBarSubscriber] = []
     
@@ -45,19 +45,19 @@ class TouchBarManager: TouchBarManagerProtocol {
         }
     }
     
-    func add<T>(subscriber: T) {
+    public func add<T>(subscriber: T) {
         guard let subscriber = subscriber as? TouchBarSubscriber else { return }
         subscribers.append(subscriber)
         print("TouchBarManager: Subscriber added: \(subscriber)")
     }
     
-    func remove<T>(subscriber filter: T) {
+    public func remove<T>(subscriber filter: T) {
         guard let filter = filter as? (TouchBarSubscriber) -> Bool,
             let index = subscribers.firstIndex(where: filter) else { return }
         subscribers.remove(at: index)
     }
     
-    func notifySubscribers() {
+    public func notifySubscribers() {
         switch notificationType {
         case .didBegin:
             subscribers.forEach({$0.didBegin()})
@@ -76,27 +76,27 @@ class TouchBarManager: TouchBarManagerProtocol {
         }
     }
     
-    func didBegin() {
+    public func didBegin() {
         notificationType = .didBegin
     }
     
-    func didEnded() {
+    public func didEnded() {
         notificationType = .didEnded
     }
     
-    func prevButton() {
+    public func prevButton() {
         notificationType = .prevButton
     }
     
-    func nextButton() {
+    public func nextButton() {
         notificationType = .nextButton
     }
     
-    func closeButton() {
+    public func closeButton() {
         notificationType = .closeButton
     }
     
-    func confirmButton() {
+    public func confirmButton() {
         notificationType = .confirmButton
     }
 }

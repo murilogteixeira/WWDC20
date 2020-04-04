@@ -20,7 +20,7 @@ public class TouchBarScene: SKScene {
     
     weak var delegateTB: TouchBarSceneDelegate?
     
-    public lazy var stateMachine = GKStateMachine(states: states)
+    lazy var stateMachine = GKStateMachine(states: self.states)
     
     private lazy var states = [
         IdleState(touchBarScene: self),
@@ -65,10 +65,9 @@ public class TouchBarScene: SKScene {
     public override init(size: CGSize) {
         super.init(size: size)
         TouchBarScene.shared = self
-        name = NodeName.touchBarScene.rawValue
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
@@ -88,5 +87,23 @@ extension TouchBarScene {
         let move = SKAction.moveTo(x: 0, duration: 1)
         move.timingMode = .easeInEaseOut
         label.run(move)
+    }
+    
+    func toAlert() {
+        let colors: [NSColor] = [.white, .black]
+        var i = 0
+        let color1: SKAction = .run { [weak self] in
+            guard let scene = self else { return }
+            scene.sceneTB.fillColor = colors[i]
+            i += 1
+        }
+        let color2: SKAction = .run { [weak self] in
+            guard let scene = self else { return }
+            scene.sceneTB.fillColor = colors[i]
+            i -= 1
+        }
+        let wait: SKAction = .wait(forDuration: 0.05)
+        let sequence: [SKAction] = [color1, wait, color2, wait, color1, wait, color2]
+        sceneTB.run(.sequence(sequence))
     }
 }

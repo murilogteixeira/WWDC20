@@ -11,26 +11,17 @@ import GameplayKit
 
 public class IntroState: GKState {
     unowned let gameScene: GameScene
-    var controlNode: SKNode!
-    var scene: SKSpriteNode!
+    lazy var controlNode: SKNode = gameScene.controlNode
+    lazy var scene: SKSpriteNode = buildScene()
     
-    lazy var floor = Floor(size: CGSize(width: self.scene.frame.size.width, height: self.scene.frame.height * 0.15),
-                           position: CGPoint(x: 0, y: -self.scene.size.height / 2))
-    lazy var leftWall = Wall(height: self.scene.size.height, positionX: -self.scene.size.width / 2)
-    lazy var rightWall = Wall(height: self.scene.size.height, positionX: self.scene.size.width / 2)
-    
-    lazy var hero: Hero = {
-        let hero = Hero(size: 80)
-        self.gameScene.delegateScene = hero
-        return hero
-    }()
+    lazy var hero = gameScene.hero
     
     //MARK: Boxes
     var dialogBox: DialogBox {
         let boxSize: CGFloat = 30
         let widthScene = (self.scene.size.width / 2) - (boxSize * 3)
-//        let heightScene = -self.scene.size.width / 2
-        let position = CGPoint(x: CGFloat.random(in: -widthScene..<widthScene), y: (self.scene.size.height / 2) + boxSize)
+        let position = CGPoint(x: CGFloat.random(in: -widthScene..<widthScene),
+                               y: (self.scene.size.height / 2) + boxSize)
         let node = DialogBox(self.scene, position: position, size: boxSize)
         let moveAction: SKAction = .moveTo(y: 0, duration: 2)
         moveAction.timingMode = .easeOut
@@ -251,20 +242,15 @@ public class IntroState: GKState {
     
     //MARK: DidEnter
     public override func didEnter(from previousState: GKState?) {
-        controlNode = gameScene.controlNode
-        
-        scene = buildScene()
-        controlNode?.addChild(scene)
+        controlNode.addChild(scene)
+        controlNode.alpha = 0
+        controlNode.run(.fadeAlpha(to: 1.0, duration: 0.4))
                 
         scene.addChild(hero)
-        scene.addChild(floor)
-        scene.addChild(leftWall)
-        scene.addChild(rightWall)
         
-        scene.run(.fadeAlpha(to: 1.0, duration: 0.4))
                 
         runAction(action: sceneActions[currentAction], inNode: scene)
-//        scene.addChild(door)
+//        showDoor()
         GameViewController.shared?.touchBarManager.add(subscriber: self)
     }
     
@@ -272,8 +258,6 @@ public class IntroState: GKState {
     public override func willExit(to nextState: GKState) {
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
-        self.controlNode = nil
-        self.scene = nil
         
         GameViewController.shared?.touchBarManager.remove(subscriber: self)
     }
@@ -289,7 +273,6 @@ public class IntroState: GKState {
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue
-        node.alpha = 0
         return node
     }
     
@@ -304,6 +287,18 @@ public class IntroState: GKState {
     }
 }
 
+extension IntroState {
+    func showDoor() {
+        scene.addChild(door)
+        door.isShow = true
+    }
+    
+    func hiddeDoor() {
+        door.removeFromParent()
+        door.isShow = false
+    }
+}
+
 //MARK: TouchBarSubscriberNotifyer
 extension IntroState: TouchBarSubscriber {
     func didEnded() {
@@ -311,9 +306,13 @@ extension IntroState: TouchBarSubscriber {
         if currentAction < sceneActions.count {
             runAction(action: sceneActions[currentAction], inNode: scene)
         }
-        else {
-            scene.addChild(door)
+        else if !door.isShow {
+            showDoor()
         }
+    }
+    
+    func confirmButtonPressed() {
+        gameScene.stateMachine.enter(GameState.self)
     }
     
     public override var description: String { "IntroState" }

@@ -10,7 +10,7 @@ import Cocoa
 import SpriteKit
 import GameplayKit
 
-class AlertState: GKState {
+public class AlertState: GKState {
     unowned let touchBarScene: TouchBarScene
     lazy var scene: SKShapeNode = self.touchBarScene.sceneTB
     
@@ -51,7 +51,7 @@ class AlertState: GKState {
         self.touchBarScene.label.fontColor = self.colors[self.currentColor]
     }
     
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
+    public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is DialogMenuState.Type:
             return true
@@ -60,14 +60,14 @@ class AlertState: GKState {
         }
     }
     
-    override func didEnter(from previousState: GKState?) {
+    public override func didEnter(from previousState: GKState?) {
         GameViewController.shared?.touchBarView.addSubview(tapReceiver)
         atentionColor.fire()
         touchBarScene.label.text = "Toque aqui para continuar!"
         tapReceiver.isEnabled = true
     }
     
-    override func willExit(to nextState: GKState) {
+    public override func willExit(to nextState: GKState) {
         touchBarScene.label.fontColor = .white
         touchBarScene.label.text = "Pixel Game"
         tapReceiver.isEnabled = false

@@ -10,14 +10,14 @@ import Cocoa
 import SpriteKit
 import GameplayKit
 
-class GameState: GKState {
+public class GameState: GKState {
     unowned let gameScene: GameScene
     lazy var controlNode: SKNode = gameScene.controlNode
     lazy var scene: SKSpriteNode = buildScene()
     
     lazy var hero = gameScene.hero
     
-    override func isValidNextState(_ stateClass: AnyClass) -> Bool {
+    public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is BuildRoomState.Type:
             return true
@@ -28,7 +28,7 @@ class GameState: GKState {
         }
     }
     
-    override func didEnter(from previousState: GKState?) {
+    public override func didEnter(from previousState: GKState?) {
         controlNode.addChild(scene)
         controlNode.alpha = 0
         controlNode.run(.fadeAlpha(to: 1.0, duration: 0.4))
@@ -37,7 +37,7 @@ class GameState: GKState {
         hero.position = hero.initialPosition
     }
     
-    override func willExit(to nextState: GKState) {
+    public override func willExit(to nextState: GKState) {
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
     }
@@ -56,7 +56,7 @@ class GameState: GKState {
         return node
     }
     
-    init(gameScene: GameScene) {
+    public init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
     }

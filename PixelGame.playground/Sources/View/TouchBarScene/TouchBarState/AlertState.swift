@@ -26,14 +26,14 @@ public class AlertState: GKState {
         return button
     }()
     
-    @objc func tap(sender: Any) {
+    @objc func tap() {
         atentionColor.invalidate()
 
         scene.fillColor = .green
         touchBarScene.label.text = "Toque confirmado. Carregando..."
         touchBarScene.label.fontColor = .black
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.touchBarScene.stateMachine.enter(DialogMenuState.self)
         }
     }

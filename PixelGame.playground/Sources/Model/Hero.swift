@@ -39,6 +39,10 @@ public class Hero: SKSpriteNode {
                 texture = jumpingFrame
                 walkAnimation(false)
                 stopAnimation(false)
+                velocity = 6
+            }
+            else {
+                velocity = 5
             }
         }
     }
@@ -69,7 +73,7 @@ public class Hero: SKSpriteNode {
         CGPoint(x: 360 * -0.8, y: 240 * -0.5)
     }()
     
-    let velocity: CGFloat = 5
+    var velocity: CGFloat = 5
     var isOnTheFloor = false {
         didSet {
             if isOnTheFloor {
@@ -159,7 +163,7 @@ extension Hero {
 
 //MARK: GameSceneDelegate
 extension Hero: GameSceneDelegate {
-    public func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
+    func keyDown(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
             if gameScene.directionPressed == .none {
@@ -179,7 +183,7 @@ extension Hero: GameSceneDelegate {
         }
     }
 
-    public func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
+    func keyUp(_ gameScene: GameScene, keyCode: KeyCode?) {
         switch keyCode {
         case .left:
             if gameScene.directionPressed == .left {
