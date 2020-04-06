@@ -16,6 +16,7 @@ protocol GameSceneDelegate: AnyObject {
 
 //MARK: GameScene
 public class GameScene: SKScene {
+    static var shared: GameScene!
     
     lazy var states = [
         IntroState(gameScene: self),
@@ -51,9 +52,13 @@ public class GameScene: SKScene {
     }()
     
     public override func didMove(to view: SKView) {
-        stateMachine.enter(IntroState.self)
-//        stateMachine.enter(GameState.self)
-
+//        stateMachine.enter(IntroState.self)
+        
+        // <-- Apagar
+        stateMachine.enter(GameState.self)
+        TouchBarScene.showAlert = false
+        // -->
+        
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
         addChild(controlNode)
@@ -71,6 +76,7 @@ public class GameScene: SKScene {
     
     public override init(size: CGSize) {
         super.init(size: size)
+        GameScene.shared = self
         NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: customKeyDown(event:))
         NSEvent.addLocalMonitorForEvents(matching: .keyUp, handler: customKeyUp(event:))
     }

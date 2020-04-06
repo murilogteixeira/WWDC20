@@ -11,6 +11,7 @@ import SpriteKit
 class Wall: SKNode {
     convenience init(height: CGFloat, positionX: CGFloat) {
         self.init()
+        name = NodeName.wall.rawValue
         position = CGPoint(x: positionX, y: 0)
         zPosition = NodesZPosition.elements.rawValue
         physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 1, height: height))

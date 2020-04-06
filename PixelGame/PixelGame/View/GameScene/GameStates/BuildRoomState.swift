@@ -15,6 +15,8 @@ class BuildRoomState: GKState {
     lazy var controlNode: SKNode = gameScene.controlNode
     lazy var scene: SKSpriteNode = buildScene()
     
+    lazy var hero = gameScene.hero
+    
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is GameState.Type:
@@ -25,10 +27,14 @@ class BuildRoomState: GKState {
     }
     
     override func didEnter(from previousState: GKState?) {
+        gameScene.physicsWorld.contactDelegate = self
         
         controlNode.addChild(scene)
+        controlNode.alpha = 0
+        controlNode.run(.fadeAlpha(to: 1.0, duration: 0.4))
         
-        scene.addChild(SKNode())
+        scene.addChild(hero)
+        hero.position = hero.initialPosition
     }
     
     override func willExit(to nextState: GKState) {
@@ -37,7 +43,7 @@ class BuildRoomState: GKState {
     }
     
     override func update(deltaTime seconds: TimeInterval) {
-        
+        hero.move(direction: gameScene.directionPressed)
     }
     
     func buildScene() -> SKSpriteNode {
@@ -54,4 +60,22 @@ class BuildRoomState: GKState {
         super.init()
     }
 
+}
+
+extension BuildRoomState: SKPhysicsContactDelegate {
+    func didBegin(_ contact: SKPhysicsContact) {
+        guard let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
+            let nodeAStringName = nodeA.name, let nodeBStringName = nodeB.name,
+            let nodeNameA = NodeName(rawValue: nodeAStringName), let nodeNameB = NodeName(rawValue: nodeBStringName) else {
+                print("GameState: Contact node has no name: \(contact)")
+            return
+        }
+        
+        if nodeNameA == .hero || nodeNameB == .hero {
+            guard let hero = (nodeNameA == .hero ? nodeA : nodeB) as? Hero else { return }
+            let object = (nodeNameA != .hero ? nodeA : nodeB)
+
+            hero.contact(scene, hero, object: object)
+        }
+    }
 }

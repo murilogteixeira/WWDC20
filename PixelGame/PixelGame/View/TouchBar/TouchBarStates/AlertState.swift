@@ -49,10 +49,12 @@ public class AlertState: GKState {
         
         label.text = strings[currentString]
         alignLabel()
-        touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
                 
         if currentString == 1 {
+            label.fontColor = .cyan
+            touchBarScene.notifyTouchBar(color: .cyan, duration: 0.075)
             tapReceiver.isEnabled = false
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.75) {
                 self.currentString += 1
                 self.tapReceiver.isEnabled = true
@@ -60,7 +62,11 @@ public class AlertState: GKState {
                 self.label.text = self.strings[self.currentString]
                 self.alignLabel()
                 self.touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
+                self.label.fontColor = .green
             }
+        }
+        else {
+            touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
         }
     }
     

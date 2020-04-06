@@ -54,7 +54,8 @@ extension ConfirmState {
     func showButtons() {
         touchBarScene.notifyTouchBar(color: .white, duration: 0.075)
         touchBarScene.moveLabel { [weak self] in
-            guard let state = self else { return }
+            guard let state = self,
+                state.touchBarScene.stateMachine.currentState is ConfirmState else { return }
             TouchBarView.shared.addSubview(state.button)
         }
         TouchBarView.manager.didBegin()

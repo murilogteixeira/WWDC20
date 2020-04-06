@@ -11,8 +11,9 @@ import SpriteKit
 // MARK: Hero
 public class Hero: SKSpriteNode {
     
-    var bugContactCount = 0
     var codeBlocksCount = 0
+    let codeBlocksGoal = 50
+    var builderWasShown = false
     
     var walking = false {
         didSet {
@@ -225,24 +226,66 @@ extension Hero {
             guard let dialogContainer = (object as? DialogBox)?.dialogContainer else { return }
             dialogContainer.show(in: sceneParent)
             object.destroy(fadeOut: 0.2)
+            
+            sceneParent.removeAllActions()
+            
+            sceneParent.children.forEach { node in
+                if node.name != nil, let nodeName = NodeName(rawValue: node.name!),
+                    nodeName != .hero, nodeName != .messageBox {
+                    node.removeFromParent()
+                }
+            }
+            
         case .collectable:
+            codeBlocksCount += 1
+            
             object.removeAllActions()
             object.destroy(fadeOut: 0.5, moveWhileDisappearing: true)
             (object as? SKSpriteNode)?.flash(with: .green)
-            codeBlocksCount += 1
-            (sceneParent.childNode(withName: NodeName.blocksCountLabel.rawValue) as? SKLabelNode)?
-                .text = "\(codeBlocksCount)"
+            
+            changeCountLabel(scene: sceneParent)
+            showBuildBox(scene: sceneParent)
         case .bug:
-            object.removeAllActions()
-            TouchBarScene.shared?.notifyTouchBar(color: .red)
-            object.destroy(fadeOut: 0.3)
-            flash(with: .red, count: 10, colorBlendFactor: 0.3)
-            bugContactCount += 1
+            
             codeBlocksCount = 0
-            (sceneParent.childNode(withName: NodeName.blocksCountLabel.rawValue) as? SKLabelNode)?
-                .text = "\(codeBlocksCount)"
+            
+            TouchBarScene.shared?.notifyTouchBar(color: .red)
+            flash(with: .red, count: 10, colorBlendFactor: 0.3)
+            
+            object.removeAllActions()
+            object.destroy(fadeOut: 0.3)
+            
+            changeCountLabel(scene: sceneParent)
+            
+            if GameScene.shared.stateMachine.currentState is GameState,
+                let dialogBox = sceneParent.childNode(withName: NodeName.dialogBox.rawValue) {
+                
+                dialogBox.removeAllActions()
+                dialogBox.run(.moveTo(y: (sceneParent.frame.size.height / 2) + dialogBox.frame.size.height, duration: 0))
+                builderWasShown = false
+            }
+        case .door:
+            if let door = object as? Door {
+                door.canOpen = true
+            }
         default:
             break
+        }
+    }
+    
+    func changeCountLabel(scene: SKNode) {
+        guard let childNode = scene.childNode(withName: NodeName.blocksCountLabel.rawValue),
+            let label = childNode as? SKLabelNode else { return }
+        label.text = "\(codeBlocksCount)"
+    }
+    
+    func showBuildBox(scene: SKNode) {
+        if !builderWasShown, codeBlocksCount >= 5, let buildBox = scene.childNode(withName: NodeName.dialogBox.rawValue) {
+            builderWasShown = true
+
+            let moveAction: SKAction = .moveTo(y: 0, duration: 2)
+            moveAction.timingMode = .easeInEaseOut
+            buildBox.run(moveAction)
         }
     }
 }

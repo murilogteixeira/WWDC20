@@ -42,6 +42,52 @@ public class GameState: GKState {
         node.run(.sequence([moveAction, .removeFromParent()]))
         return node
     }
+    
+    lazy var goalCompletedDialog: DialogMessageContainer = {
+        let textDialog = [
+            """
+            Parabéns! Você conseguiu
+
+            alcançar o seu objetivo.
+
+
+            1/3
+            """,
+            """
+            Coletou a quantidade necessária
+
+            de blocos de código Swift para
+
+            dar início às correções.
+
+
+            2/3
+            """,
+            """
+            Entre na Sala de Contrução para
+
+            corrigir um bloco de código
+
+            afetado pela bagunça dos Bugs.
+
+
+            3/3
+            """,
+        ]
+        let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog)
+        return node
+    }()
+    
+    var buildBox: DialogBox {
+        let buildBox: CGFloat = 30
+        let widthScene = (scene.size.width / 2) - (buildBox * 3)
+        let position = CGPoint(x: CGFloat.random(in: -widthScene..<widthScene),
+                               y: (scene.size.height / 2) + buildBox)
+        let node = DialogBox(scene, position: position, size: 30)
+        node.name = NodeName.dialogBox.rawValue
+        node.dialogContainer = goalCompletedDialog
+        return node
+    }
 
     lazy var codeBlocksCollectedLabel: SKLabelNode = {
         let label = SKLabelNode(fontNamed: kFontName)
@@ -56,6 +102,13 @@ public class GameState: GKState {
         return label
     }()
     
+    lazy var door: Door = {
+        let size = CGSize(width: 60, height: 100)
+        let position = CGPoint(x: (scene.size.width / 2) - (size.width / 2), y: -150)
+        let node = Door(size: size, position: position)
+        return node
+    }()
+    
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
         switch stateClass {
         case is BuildRoomState.Type:
@@ -67,6 +120,7 @@ public class GameState: GKState {
         }
     }
     
+    //MARK: DidEnter
     public override func didEnter(from previousState: GKState?) {
         gameScene.physicsWorld.contactDelegate = self
         
@@ -78,14 +132,20 @@ public class GameState: GKState {
         hero.position = hero.initialPosition
         
         scene.addChild(codeBlocksCollectedLabel)
+        scene.addChild(buildBox)
         
         initCollectables()
         initBugs()
+        
+        TouchBarView.manager.add(subscriber: self)
     }
     
+    //MARK: WillExit
     public override func willExit(to nextState: GKState) {
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
+        
+        TouchBarView.manager.add(subscriber: self)
     }
     
     //MARK: Update
@@ -108,6 +168,7 @@ public class GameState: GKState {
     }
 }
 
+// MARK: InitOcjects - Collectables/Bugs
 extension GameState {
     func initCollectables() {
         let addCollectable: SKAction = .run {
@@ -128,6 +189,33 @@ extension GameState {
     }
 }
 
+//MARK: TouchBarSubscriber
+extension GameState: TouchBarSubscriber {
+    func didEnded() {
+        guard door.parent == nil else { return }
+        showDoor()
+    }
+    
+    func confirmButtonPressed() {
+        gameScene.stateMachine.enter(BuildRoomState.self)
+    }
+    
+    public override var description: String { "GameState" }
+}
+
+extension GameState {
+    func showDoor() {
+        scene.addChild(door)
+        door.isShow = true
+    }
+    
+    func hiddeDoor() {
+        door.removeFromParent()
+        door.isShow = false
+    }
+}
+
+//MARK: SKPhysicsContactDelegate
 extension GameState: SKPhysicsContactDelegate {
     public func didBegin(_ contact: SKPhysicsContact) {
         
@@ -149,6 +237,23 @@ extension GameState: SKPhysicsContactDelegate {
             let object = nodeNameA != .floor ? nodeA : nodeB
             
             floor.contact(scene, floor, object: object)
+        }
+    }
+    
+    public func didEnd(_ contact: SKPhysicsContact) {
+        
+        guard let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
+            let nodeAStringName = nodeA.name, let nodeBStringName = nodeB.name,
+            let nodeNameA = NodeName(rawValue: nodeAStringName), let nodeNameB = NodeName(rawValue: nodeBStringName) else {
+                print("GameState: Contact node has no name: \(contact)")
+            return
+        }
+        
+        if nodeNameA == .door || nodeNameB == .door {
+            guard let door = (nodeNameA == .door ? nodeA : nodeB) as? Door,
+            let _ = nodeNameA != .door ? nodeA : nodeB as? Hero else { return }
+            
+            door.canOpen = false
         }
     }
 }
