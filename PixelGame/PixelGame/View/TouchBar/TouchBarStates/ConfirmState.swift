@@ -18,13 +18,13 @@ public class ConfirmState: GKState {
         let button = NSButton(title: "Entrar", target: self, action: #selector(tap))
         button.frame = CGRect(x: 440, y: 0, width: 100, height: 30)
         button.font = NSFont(name: kFontName, size: 12)
-        button.bezelColor = .hexadecimal(hex: 0x17B352)
+        button.bezelColor = .hexadecimal(0x17B352)
         return button
     }()
     
     @objc func tap() {
         touchBarScene.stateMachine.enter(IdleState.self)
-        GameViewController.shared?.touchBarManager.confirmButton()
+        TouchBarView.manager.confirmButton()
     }
     
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
@@ -52,18 +52,18 @@ public class ConfirmState: GKState {
 
 extension ConfirmState {
     func showButtons() {
-        touchBarScene.toAlert()
+        touchBarScene.notifyTouchBar(color: .white, duration: 0.075)
         touchBarScene.moveLabel { [weak self] in
             guard let state = self else { return }
-            GameViewController.shared?.touchBarView.addSubview(state.button)
+            TouchBarView.shared.addSubview(state.button)
         }
-        GameViewController.shared?.touchBarManager.didBegin()
+        TouchBarView.manager.didBegin()
     }
     
     func hiddeButtons() {
         button.removeFromSuperview()
         touchBarScene.resetLabel()
-        GameViewController.shared?.touchBarManager.didEnded()
+        TouchBarView.manager.didEnded()
     }
     
 }

@@ -23,8 +23,8 @@ class DialogBox: SKSpriteNode {
         
         setupPhysicsBody()
         
-        let sprite = PixelArtObject(format: boxFormat, size: self.size).objectSpriteNode
-        addChild(sprite)
+        let texture = PixelArtObject(format: boxFormat, size: self.size).objectTexture
+        self.texture = texture
     }
     
     func setupPhysicsBody() {
@@ -47,7 +47,7 @@ class DialogBox: SKSpriteNode {
 // MARK: Handle Physic Contact
 extension DialogBox {
     func contact(_ scene: SKSpriteNode, _ dialogBox: SKNode, with object: SKNode) {
-        destroy(dialogBox)
+        dialogBox.destroy(fadeOut: 0.4)
         if object.name == NodeName.hero.rawValue {
             guard let dialogContainer = dialogContainer else { return }
             dialogContainer.show(in: sceneParent)
@@ -56,21 +56,11 @@ extension DialogBox {
             print("Contact with floor")
         }
     }
-    
-    func destroy(_ node: SKNode) {
-        node.physicsBody = nil
-        let disappear = SKAction.fadeAlpha(to: 0, duration: 0.5)
-        let remove = SKAction.run { 
-            node.removeFromParent()
-        }
-        
-        node.run(.sequence([disappear, remove]))
-    }
 }
 
 //MARK: Format
 extension DialogBox {
-    var boxFormat: [[NSColor]] {
+    var boxFormat: [[SKColor]] {
         [
             [c,c,b,b,b,b,b,b,b,b,b,b,b,b,c,c],
             [c,b,g,g,g,g,g,g,g,g,g,g,g,g,b,c],

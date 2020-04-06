@@ -9,15 +9,15 @@
 import SpriteKit
 
 enum CategoryBitmask: UInt32 {
-    case none, hero, enemy, floor, wall, dialogBox, door
+    case none, hero, bug, floor, wall, dialogBox, door, collectable
 }
 
 enum NodeName: String {
-    case hero, enemy, floor, wall, dialogBox, messageBox, background, controlNode, label, door
+    case hero, bug, floor, wall, dialogBox, messageBox, background, controlNode, label, door, collectable, blocksCountLabel
 }
 
 enum NodesZPosition: CGFloat {
-    case background, controlNode, elements, door, character, dialog, floor, messageBox, label
+    case background, controlNode, elements, door, character, dialog, floor, bug, codeBlock, messageBox, label
 }
 
 struct TouchBarConstants {
@@ -31,12 +31,12 @@ struct TouchBarConstants {
 
 let kFontName = "PressStart2P-Regular"
 
-let c = NSColor.clear
-let b = NSColor.black
-let w = NSColor.white
-let d = NSColor.darkGray
-let l = NSColor.lightGray
-let g = NSColor.hexadecimal(hex: 0xf6b73d)
+let c = SKColor.clear
+let b = SKColor.black
+let w = SKColor.white
+let d = SKColor.darkGray
+let l = SKColor.lightGray
+let g = SKColor.hexadecimal(0xf6b73d)
 
 public struct Constants {
     public struct Elements {

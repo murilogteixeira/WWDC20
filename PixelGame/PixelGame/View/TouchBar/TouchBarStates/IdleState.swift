@@ -32,7 +32,7 @@ public class IdleState: GKState {
     }
     
     public override func willExit(to nextState: GKState) {
-        
+
     }
     
     init(touchBarScene: TouchBarScene) {

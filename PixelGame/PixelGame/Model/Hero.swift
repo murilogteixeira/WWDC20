@@ -10,6 +10,10 @@ import SpriteKit
 
 // MARK: Hero
 public class Hero: SKSpriteNode {
+    
+    var bugContactCount = 0
+    var codeBlocksCount = 0
+    
     var walking = false {
         didSet {
             if !jumping {
@@ -39,10 +43,10 @@ public class Hero: SKSpriteNode {
                 texture = jumpingFrame
                 walkAnimation(false)
                 stopAnimation(false)
-                velocity = 6
+                speedMoviment = jumpingSpeed
             }
             else {
-                velocity = 5
+                speedMoviment = groundSpeed
             }
         }
     }
@@ -73,11 +77,13 @@ public class Hero: SKSpriteNode {
         CGPoint(x: 360 * -0.8, y: 240 * -0.5)
     }()
     
-    var velocity: CGFloat = 5
+    var groundSpeed: CGFloat = 5.5
+    var jumpingSpeed: CGFloat = 6.5
+    lazy var speedMoviment: CGFloat = groundSpeed
+    
     var isOnTheFloor = false {
         didSet {
             if isOnTheFloor {
-                walking = isWalking
                 jumping = false
             }
         }
@@ -118,10 +124,10 @@ extension Hero {
 //        NSLog("Hero Move")
         switch direction {
         case .left:
-            run(.moveTo(x: position.x - velocity, duration: 0))
+            run(.moveTo(x: position.x - speedMoviment, duration: 0))
             xScale = abs(xScale) * -1
         case .right:
-            run(.moveTo(x: position.x + velocity, duration: 0))
+            run(.moveTo(x: position.x + speedMoviment, duration: 0))
             xScale = abs(xScale) * 1
         default:
             break
@@ -203,17 +209,55 @@ extension Hero: GameSceneDelegate {
     }
 }
 
+//MARK: ContactPhysics
+extension Hero {
+    func contact(_ sceneParent: SKSpriteNode, _ heroNode: Hero, object: SKNode) {
+        
+        let objectName = NodeName(rawValue: object.name!)!
+        
+        switch objectName {
+        case .floor:
+            isOnTheFloor = true
+            if isOnTheFloor {
+                walking = isWalking
+            }
+        case .dialogBox:
+            guard let dialogContainer = (object as? DialogBox)?.dialogContainer else { return }
+            dialogContainer.show(in: sceneParent)
+            object.destroy(fadeOut: 0.2)
+        case .collectable:
+            object.removeAllActions()
+            object.destroy(fadeOut: 0.5, moveWhileDisappearing: true)
+            (object as? SKSpriteNode)?.flash(with: .green)
+            codeBlocksCount += 1
+            (sceneParent.childNode(withName: NodeName.blocksCountLabel.rawValue) as? SKLabelNode)?
+                .text = "\(codeBlocksCount)"
+        case .bug:
+            object.removeAllActions()
+            TouchBarScene.shared?.notifyTouchBar(color: .red)
+            object.destroy(fadeOut: 0.3)
+            flash(with: .red, count: 10, colorBlendFactor: 0.3)
+            bugContactCount += 1
+            codeBlocksCount = 0
+            (sceneParent.childNode(withName: NodeName.blocksCountLabel.rawValue) as? SKLabelNode)?
+                .text = "\(codeBlocksCount)"
+        default:
+            break
+        }
+    }
+}
+
 // MARK: Format
 extension Hero {
-    var c: NSColor { .clear } // transparente
-    var b: NSColor {.black} // cabelo, maos, pes
-    var n: NSColor {.hexadecimal(hex: 0xf6e5b5)} // pele
-    var o: NSColor {.hexadecimal(hex: 0xb2a684)} // oculos
-    var r: NSColor {.hexadecimal(hex: 0xc74545)} // camisa
-    var y: NSColor {.hexadecimal(hex: 0xc7c55a)} // cinto
-    var l: NSColor {.hexadecimal(hex: 0x25597a)} // calça e manga da blusa
+    var c: SKColor { .clear } // transparente
+    var b: SKColor {.black} // cabelo, maos, pes
+    var n: SKColor {.hexadecimal(0xf6e5b5)} // pele
+    var o: SKColor {.hexadecimal(0xb2a684)} // oculos
+    var r: SKColor {.hexadecimal(0xc74545)} // camisa
+    var y: SKColor {.hexadecimal(0xc7c55a)} // cinto
+    var l: SKColor {.hexadecimal(0x25597a)} // calça e manga da blusa
     
-    var stoppedFramesFormat: [[[NSColor]]] {
+    var stoppedFramesFormat: [[[SKColor]]] {
        [[ // 1
             [c,c,b,b,b,b,b,b,c],
             [c,b,b,b,b,b,b,b,b],
@@ -282,7 +326,7 @@ extension Hero {
     }
     
     
-    var walkingFramesFormat: [[[NSColor]]] {
+    var walkingFramesFormat: [[[SKColor]]] {
         [[ // 1
             [c,c,c,c,c,c,c,c,c],
             [c,c,b,b,b,b,b,b,c],
@@ -414,7 +458,7 @@ extension Hero {
         ]]
     }
     
-    var jumpingFrameFormat: [[NSColor]] {
+    var jumpingFrameFormat: [[SKColor]] {
         [ // 1
             [c,c,b,b,b,b,b,b,c],
             [c,b,b,b,b,b,b,b,b],

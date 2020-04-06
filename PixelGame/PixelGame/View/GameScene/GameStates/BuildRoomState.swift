@@ -42,7 +42,7 @@ class BuildRoomState: GKState {
     
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
-        node.color = .hexadecimal(hex: 0xC9FFFD)
+        node.color = .hexadecimal(0xC9FFFD)
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue

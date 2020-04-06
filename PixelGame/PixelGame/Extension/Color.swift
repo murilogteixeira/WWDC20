@@ -8,17 +8,17 @@
 
 import SpriteKit
 
-extension NSColor {
-    class func hexadecimal(hex: Int, alpha: CGFloat = 1) -> NSColor {
+extension SKColor {
+    class func hexadecimal(_ hex: Int, alpha: CGFloat = 1) -> SKColor {
         let R = CGFloat((hex >> 16) & 0xff) / 255
         let G = CGFloat((hex >> 08) & 0xff) / 255
         let B = CGFloat((hex >> 00) & 0xff) / 255
-        return NSColor(red: R, green: G, blue: B, alpha: alpha)
+        return SKColor(calibratedRed: R, green: G, blue: B, alpha: alpha)
     }
 }
 
 extension CGColor {
     class func colorWithHex(hex: Int) -> CGColor {
-        return NSColor.hexadecimal(hex: hex).cgColor
+        return SKColor.hexadecimal(hex).cgColor
     }
 }

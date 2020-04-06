@@ -11,16 +11,7 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: NSViewController {
-    static var shared: GameViewController?
-    
-    var touchBarView = SKView(frame: CGRect(x: 0, y: 0, width: 685, height: 30))
-    var touchBarManager = TouchBarManager()
-    var touchBarItemsIdentifier: [NSTouchBarItem.Identifier] = [.view] {
-        didSet {
-            touchBar = makeTouchBar()
-        }
-    }
-    
+        
     @IBOutlet var skView: SKView!
     var scene: GameScene!
         
@@ -41,35 +32,10 @@ class GameViewController: NSViewController {
         }
         
     }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        GameViewController.shared = self
-    }
 }
 
-extension GameViewController: NSTouchBarDelegate {
-    
+extension GameViewController {
     override func makeTouchBar() -> NSTouchBar? {
-        let touchBar = NSTouchBar()
-        touchBar.delegate = self
-        touchBar.customizationIdentifier = .touchBarIdentifier
-        touchBar.defaultItemIdentifiers = touchBarItemsIdentifier
-        return touchBar
-    }
-    
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
-        let custom = NSCustomTouchBarItem(identifier: identifier)
-        
-        switch identifier {
-        case .view:
-            touchBarView.presentScene(TouchBarScene(size: touchBarView.frame.size))
-            touchBarView.showsNodeCount = true
-            custom.view = touchBarView
-        default:
-            return nil
-        }
-        
-        return custom
+        return TouchBarView.shared.makeTouchBar()
     }
 }

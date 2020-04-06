@@ -40,7 +40,7 @@ class DialogMessageContainer: SKSpriteNode {
         self.position = position
         
 //        addChild(PixelArtObject(format: format, size: self.size).objectSpriteNode)
-        addChild(SKSpriteNode(color: .black, size: CGSize(width: size, height: size / 2)))
+        addChild(SKSpriteNode(color: .black, size: CGSize(width: size, height: size / 1.5)))
         setScale(0)
         name = NodeName.messageBox.rawValue
         zPosition = NodesZPosition.messageBox.rawValue
@@ -58,7 +58,7 @@ class DialogMessageContainer: SKSpriteNode {
 // MARK: Show/Hidde Dialog Message Container
 extension DialogMessageContainer {
     func show(in scene: SKSpriteNode) {
-        GameViewController.shared?.touchBarManager.add(subscriber: self)
+        TouchBarView.manager.add(subscriber: self)
         if TouchBarScene.showAlert {
             TouchBarScene.shared?.stateMachine.enter(AlertState.self)
             TouchBarScene.showAlert = false
@@ -79,7 +79,7 @@ extension DialogMessageContainer {
     }
     
     func hidde() {
-        GameViewController.shared?.touchBarManager.remove(subscriber: self)
+        TouchBarView.manager.remove(subscriber: self)
 
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
         let scaleDown = SKAction.scale(to: 0, duration: 0.3)
@@ -118,7 +118,7 @@ extension DialogMessageContainer: TouchBarSubscriber {
 
 //MARK: Format
 extension DialogMessageContainer {
-    var format: [[NSColor]] {
+    var format: [[SKColor]] {
         [
             [c,c,c,c,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,b,c,c,c,c],
             [c,c,b,b,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,d,b,b,c,c],

@@ -38,54 +38,17 @@ public class IntroState: GKState {
             Code Planet!
 
             
-            As ações podem ser contoladas
+            Verifique sua iTool (TouchBar),
 
-            pela iTool, talvez você conheça
+            e conclua as instruções para con-
 
-            como TouchBar.
-
-
-            Toque na iTool para continuar.
+            tinuar.
 
 
             Caso não a encontre, pressione
 
             Command+Shift+8 para exibí-la.
-
-
-            Press > to next
-
-            1/3
             """,
-            """
-            Nessas caixas serão mostradas
-
-            as dicas e desafios a serem
-
-            cumpridos ao longo da cena.
-
-
-            Press > to next
-
-            2/3
-            """,
-            """
-            Os botões disponíveis até o mo-
-
-            mento são:
-
-
-            < - anterior
-
-            > - próximo
-
-            x - fechar
-            
-
-            Press x to close
-
-            3/3
-            """
         ]
         let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog)
         return node
@@ -242,6 +205,8 @@ public class IntroState: GKState {
     
     //MARK: DidEnter
     public override func didEnter(from previousState: GKState?) {
+        gameScene.physicsWorld.contactDelegate = self
+        
         controlNode.addChild(scene)
         controlNode.alpha = 0
         controlNode.run(.fadeAlpha(to: 1.0, duration: 0.4))
@@ -251,7 +216,7 @@ public class IntroState: GKState {
                 
         runAction(action: sceneActions[currentAction], inNode: scene)
 //        showDoor()
-        GameViewController.shared?.touchBarManager.add(subscriber: self)
+        TouchBarView.manager.add(subscriber: self)
     }
     
     //MARK: WillExit
@@ -259,7 +224,7 @@ public class IntroState: GKState {
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
         
-        GameViewController.shared?.touchBarManager.remove(subscriber: self)
+        TouchBarView.manager.remove(subscriber: self)
     }
     
     //MARK: Update
@@ -269,7 +234,7 @@ public class IntroState: GKState {
     
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
-        node.color = .hexadecimal(hex: 0xC9FFFD)
+        node.color = .hexadecimal(0xC9FFFD)
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue
@@ -283,7 +248,6 @@ public class IntroState: GKState {
     init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
-        self.gameScene.physicsWorld.contactDelegate = self
     }
 }
 
@@ -331,11 +295,6 @@ extension IntroState: SKPhysicsContactDelegate {
                 nodeA.name == floorName && nodeB.name == heroName {
             
             hero.isOnTheFloor = true
-            gameScene.upKey.busy = false
-            
-            if hero.isOnTheFloor {
-                hero.walking = hero.isWalking
-            }
         }
         else if let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
             nodeA.name == dialogBoxName || nodeB.name == dialogBoxName {
