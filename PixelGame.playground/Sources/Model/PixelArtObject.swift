@@ -10,7 +10,7 @@ import SpriteKit
 
 //MARK: PixelArtObject
 public class PixelArtObject: SKSpriteNode {
-    private var format: [[NSColor]]! {
+    private var format: [[SKColor]]! {
         didSet {
             removeAllChildren()
             build()
@@ -26,7 +26,7 @@ public class PixelArtObject: SKSpriteNode {
     }
     
     // MARK: Init
-    convenience init(format: [[NSColor]], size: CGSize) {
+    convenience init(format: [[SKColor]], size: CGSize) {
         self.init()
         self.format = format
         self.size = size

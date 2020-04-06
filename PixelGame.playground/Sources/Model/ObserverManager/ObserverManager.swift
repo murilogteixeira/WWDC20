@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol ObserverManager {
+protocol ObserverManager {
     func add<T>(subscriber: T)
     func remove<T>(subscriber filter: T)
     func notifySubscribers()

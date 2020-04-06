@@ -42,6 +42,7 @@ public class TouchBarScene: SKScene {
         let label = SKLabelNode()
         label.text = "Pixel Game"
         label.fontName = kFontName
+        label.position = CGPoint(x: 0, y: 0)
         label.fontSize = 16
         label.fontColor = .white
         label.verticalAlignmentMode = .center
@@ -89,21 +90,33 @@ extension TouchBarScene {
         label.run(move)
     }
     
-    func toAlert() {
-        let colors: [NSColor] = [.white, .black]
-        var i = 0
-        let color1: SKAction = .run { [weak self] in
-            guard let scene = self else { return }
-            scene.sceneTB.fillColor = colors[i]
-            i += 1
+//    func toAlert() {
+//        let colors: [SKColor] = [.white, .black]
+//        var i = 0
+//        let color1: SKAction = .run { [weak self] in
+//            guard let scene = self else { return }
+//            scene.sceneTB.fillColor = colors[i]
+//            i += 1
+//        }
+//        let color2: SKAction = .run { [weak self] in
+//            guard let scene = self else { return }
+//            scene.sceneTB.fillColor = colors[i]
+//            i -= 1
+//        }
+//        let wait: SKAction = .wait(forDuration: 0.05)
+//        let sequence: [SKAction] = [color1, wait, color2, wait, color1, wait, color2]
+//        sceneTB.run(.sequence(sequence))
+//    }
+    
+    func notifyTouchBar(color: SKColor, duration: TimeInterval = 0.1) {
+        let color1: SKAction = .run {
+            self.sceneTB.fillColor = color
         }
-        let color2: SKAction = .run { [weak self] in
-            guard let scene = self else { return }
-            scene.sceneTB.fillColor = colors[i]
-            i -= 1
+        let color2: SKAction = .run {
+            self.sceneTB.fillColor = .black
         }
-        let wait: SKAction = .wait(forDuration: 0.05)
-        let sequence: [SKAction] = [color1, wait, color2, wait, color1, wait, color2]
-        sceneTB.run(.sequence(sequence))
+        let wait: SKAction = .wait(forDuration: duration)
+        let sequence: SKAction = .sequence([color1, wait, color2, wait, color1, wait, color2])
+        run(sequence)
     }
 }

@@ -18,36 +18,36 @@ public class DialogMenuState: GKState {
         let button = NSButton(title: "<", target: self, action: #selector(prevButtonAction))
         button.frame = CGRect(x: 360, y: 0, width: 70, height: 30)
         button.font = NSFont(name: kFontName, size: 12)
-        button.bezelColor = .hexadecimal(hex: 0x17B352)
+        button.bezelColor = .hexadecimal(0x17B352)
         return button
     }()
     
     @objc func prevButtonAction() {
-        GameViewController.shared?.touchBarManager.prevButton()
+        TouchBarView.manager.prevButton()
     }
     
     lazy var nextButton: NSButton = {
         let button = NSButton(title: ">", target: self, action: #selector(nextButtonAction))
         button.frame = CGRect(x: 440, y: 0, width: 70, height: 30)
         button.font = NSFont(name: kFontName, size: 12)
-        button.bezelColor = .hexadecimal(hex: 0x17B352)
+        button.bezelColor = .hexadecimal(0x17B352)
         return button
     }()
     
     @objc func nextButtonAction() {
-        GameViewController.shared?.touchBarManager.nextButton()
+        TouchBarView.manager.nextButton()
     }
     
     lazy var closeButton: NSButton = {
         let button = NSButton(title: "x", target: self, action: #selector(closeButtonAction))
         button.frame = CGRect(x: 520, y: 0, width: 70, height: 30)
         button.font = NSFont(name: kFontName, size: 14)
-        button.bezelColor = .hexadecimal(hex: 0xFF5E55)
+        button.bezelColor = .hexadecimal(0xFF5E55)
         return button
     }()
     
     @objc func closeButtonAction() {
-        GameViewController.shared?.touchBarManager.closeButton()
+        TouchBarView.manager.closeButton()
         touchBarScene.stateMachine.enter(IdleState.self)
     }
     
@@ -82,14 +82,14 @@ public class DialogMenuState: GKState {
 
 extension DialogMenuState {
     func showButtons() {
-        touchBarScene.toAlert()
+        touchBarScene.notifyTouchBar(color: .white, duration: 0.075)
         touchBarScene.moveLabel { [weak self] in
             guard let state = self else { return }
-            GameViewController.shared?.touchBarView.addSubview(state.prevButton)
-            GameViewController.shared?.touchBarView.addSubview(state.nextButton)
-            GameViewController.shared?.touchBarView.addSubview(state.closeButton)
+            TouchBarView.shared.addSubview(state.prevButton)
+            TouchBarView.shared.addSubview(state.nextButton)
+            TouchBarView.shared.addSubview(state.closeButton)
         }
-        GameViewController.shared?.touchBarManager.didBegin()
+        TouchBarView.manager.didBegin()
     }
     
     func hiddeButtons() {
@@ -97,7 +97,7 @@ extension DialogMenuState {
         nextButton.removeFromSuperview()
         closeButton.removeFromSuperview()
         touchBarScene.resetLabel()
-        GameViewController.shared?.touchBarManager.didEnded()
+        TouchBarView.manager.didEnded()
     }
     
 }

@@ -10,12 +10,12 @@ import Cocoa
 import SpriteKit
 import GameplayKit
 
-class GameViewController: NSViewController {
+public class GameViewController: NSViewController {
         
     @IBOutlet var skView: SKView!
     var scene: GameScene!
         
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         if let view = self.skView {
@@ -35,7 +35,7 @@ class GameViewController: NSViewController {
 }
 
 extension GameViewController {
-    override func makeTouchBar() -> NSTouchBar? {
+    public override func makeTouchBar() -> NSTouchBar? {
         return TouchBarView.shared.makeTouchBar()
     }
 }

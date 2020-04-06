@@ -1,5 +1,5 @@
 //
-//  GameViewController.swift
+//  ViewController.swift
 //  PixelGame
 //
 //  Created by Murilo Teixeira on 31/03/20.
@@ -11,47 +11,31 @@ import SpriteKit
 import GameplayKit
 
 public class GameViewController: NSViewController {
-    public static var shared: GameViewController?
+        
+    @IBOutlet var skView: SKView!
+    var scene: GameScene!
+        
+    public override func viewDidLoad() {
+        super.viewDidLoad()
 
-    var touchBarView = SKView(frame: CGRect(x: 0, y: 0, width: 685, height: 30))
-    var touchBarManager = TouchBarManager()
-    var touchBarItemsIdentifier: [NSTouchBarItem.Identifier] = [.view] {
-        didSet {
-            touchBar = makeTouchBar()
+        if let view = self.skView {
+            // Load GameScene
+            scene = GameScene(size: view.frame.size)
+            // Set the scale mode to scale to fit the window
+            scene.scaleMode = .aspectFit
+            view.presentScene(scene)
+        
+            view.ignoresSiblingOrder = true
+            view.showsFPS = true
+            view.showsNodeCount = true
+            view.showsPhysics = true
         }
-    }
-    
-    func viewDidLoaded() {
         
     }
 }
 
-extension GameViewController: NSTouchBarDelegate {
-
+extension GameViewController {
     public override func makeTouchBar() -> NSTouchBar? {
-        
-        let touchBar = NSTouchBar()
-        touchBar.delegate = self
-        touchBar.customizationIdentifier = .touchBarIdentifier
-        touchBar.defaultItemIdentifiers = touchBarItemsIdentifier
-        return touchBar
+        return TouchBarView.shared.makeTouchBar()
     }
-
-    public func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
-        let custom = NSCustomTouchBarItem(identifier: identifier)
-
-        switch identifier {
-        case .view:
-            let touchBarScene = TouchBarScene(size: touchBarView.frame.size)
-            TouchBarScene.shared = touchBarScene
-            touchBarView.presentScene(touchBarScene)
-            touchBarView.showsNodeCount = true
-            custom.view = touchBarView
-        default:
-            return nil
-        }
-
-        return custom
-    }
-    
 }
