@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		692217C3243A9D2F0046C980 /* SKSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217C2243A9D2F0046C980 /* SKSpriteNode.swift */; };
 		692217E7243AE3D90046C980 /* TBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217E6243AE3D90046C980 /* TBView.swift */; };
+		692217E9243BFD060046C980 /* CodeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217E8243BFD060046C980 /* CodeScreen.swift */; };
+		692217EB243C23D10046C980 /* OrganizeCodeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217EA243C23D10046C980 /* OrganizeCodeLine.swift */; };
 		6924263C2434DB3600387526 /* Door.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263B2434DB3600387526 /* Door.swift */; };
 		6924263E2434DF3700387526 /* DialogMessageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263D2434DF3700387526 /* DialogMessageContainer.swift */; };
 		69340820243547A500533B10 /* TouchBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934081F243547A500533B10 /* TouchBarManager.swift */; };
@@ -46,6 +48,8 @@
 /* Begin PBXFileReference section */
 		692217C2243A9D2F0046C980 /* SKSpriteNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKSpriteNode.swift; sourceTree = "<group>"; };
 		692217E6243AE3D90046C980 /* TBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBView.swift; sourceTree = "<group>"; };
+		692217E8243BFD060046C980 /* CodeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeScreen.swift; sourceTree = "<group>"; };
+		692217EA243C23D10046C980 /* OrganizeCodeLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeCodeLine.swift; sourceTree = "<group>"; };
 		6924263B2434DB3600387526 /* Door.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Door.swift; sourceTree = "<group>"; };
 		6924263D2434DF3700387526 /* DialogMessageContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogMessageContainer.swift; sourceTree = "<group>"; };
 		6934081F243547A500533B10 /* TouchBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchBarManager.swift; sourceTree = "<group>"; };
@@ -150,6 +154,7 @@
 				6924263B2434DB3600387526 /* Door.swift */,
 				69A763AC24338D050063BBD0 /* Floor.swift */,
 				69A763AE24338D170063BBD0 /* Wall.swift */,
+				692217E8243BFD060046C980 /* CodeScreen.swift */,
 				69A763AA24338CF30063BBD0 /* KeyCode.swift */,
 				69A763B024338D2B0063BBD0 /* Constants.swift */,
 				69F9EE2C24364C3900676D65 /* ObserverManager */,
@@ -191,6 +196,7 @@
 				695DCA5F2436894500415916 /* DialogMenuState.swift */,
 				695DCA6124368C6A00415916 /* AlertState.swift */,
 				699DFD472437B2F60085FEE5 /* ConfirmState.swift */,
+				692217EA243C23D10046C980 /* OrganizeCodeLine.swift */,
 			);
 			path = TouchBarStates;
 			sourceTree = "<group>";
@@ -308,8 +314,10 @@
 				69A763AF24338D170063BBD0 /* Wall.swift in Sources */,
 				698C863F2438C8D1006EC5A0 /* Bug.swift in Sources */,
 				695188F22433BB22009CE601 /* IntroState.swift in Sources */,
+				692217EB243C23D10046C980 /* OrganizeCodeLine.swift in Sources */,
 				69A763AB24338CF30063BBD0 /* KeyCode.swift in Sources */,
 				69A763A724338CC10063BBD0 /* Hero.swift in Sources */,
+				692217E9243BFD060046C980 /* CodeScreen.swift in Sources */,
 				695188F82433BC13009CE601 /* CreditsState.swift in Sources */,
 				69A763A924338CDA0063BBD0 /* DialogBox.swift in Sources */,
 				692217E7243AE3D90046C980 /* TBView.swift in Sources */,

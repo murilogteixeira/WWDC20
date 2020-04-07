@@ -24,7 +24,8 @@ public class ConfirmState: GKState {
     
     @objc func tap() {
         touchBarScene.stateMachine.enter(IdleState.self)
-        TouchBarView.manager.confirmButton()
+//        TouchBarView.manager.confirmButton()
+        TouchBarView.manager.notify(.confirmButton, with: button)
     }
     
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
@@ -58,13 +59,15 @@ extension ConfirmState {
                 state.touchBarScene.stateMachine.currentState is ConfirmState else { return }
             TouchBarView.shared.addSubview(state.button)
         }
-        TouchBarView.manager.didBegin()
+//        TouchBarView.manager.didBegin()
+        TouchBarView.manager.notify(.didBegin)
     }
     
     func hiddeButtons() {
         button.removeFromSuperview()
         touchBarScene.resetLabel()
-        TouchBarView.manager.didEnded()
+//        TouchBarView.manager.didEnded()
+        TouchBarView.manager.notify(.didEnded)
     }
     
 }

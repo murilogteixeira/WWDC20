@@ -55,8 +55,8 @@ public class GameScene: SKScene {
 //        stateMachine.enter(IntroState.self)
         
         // <-- Apagar
-        stateMachine.enter(GameState.self)
-        TouchBarScene.showAlert = false
+        stateMachine.enter(BuildRoomState.self)
+//        TouchBarScene.showAlert = false
         // -->
         
         anchorPoint = CGPoint(x: 0.5, y: 0.5)

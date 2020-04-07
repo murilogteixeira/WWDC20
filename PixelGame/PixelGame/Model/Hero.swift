@@ -17,6 +17,7 @@ public class Hero: SKSpriteNode {
     
     var walking = false {
         didSet {
+            guard canMove else { return }
             if !jumping {
                 if walking {
                     walkAnimation(true)
@@ -90,7 +91,8 @@ public class Hero: SKSpriteNode {
         }
     }
     var canJump = true
-    
+    var canMove = true
+
     // MARK: Init
     convenience init(size: CGFloat) {
         self.init()
@@ -122,7 +124,8 @@ public class Hero: SKSpriteNode {
 //MARK: Moviments
 extension Hero {
     func move(direction: KeyCode) {
-//        NSLog("Hero Move")
+        guard canMove else { return }
+
         switch direction {
         case .left:
             run(.moveTo(x: position.x - speedMoviment, duration: 0))
@@ -136,14 +139,15 @@ extension Hero {
     }
     
     func jump() {
-        if canJump {
-            canJump = false
-            jumping = true
-            physicsBody?.applyImpulse(CGVector(dx: 0, dy: 110))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
-                self.canJump = true
-            }
+        guard canJump else { return }
+        
+        canJump = false
+        jumping = true
+        physicsBody?.applyImpulse(CGVector(dx: 0, dy: 110))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
+            self.canJump = true
         }
+        
     }
 }
 
@@ -225,13 +229,14 @@ extension Hero {
         case .dialogBox:
             guard let dialogContainer = (object as? DialogBox)?.dialogContainer else { return }
             dialogContainer.show(in: sceneParent)
-            object.destroy(fadeOut: 0.2)
+            object.destroy(fadeOut: 0.5)
+            (object as? SKSpriteNode)?.flash(with: .hexadecimal(0xFFB500))
             
             sceneParent.removeAllActions()
             
             sceneParent.children.forEach { node in
                 if node.name != nil, let nodeName = NodeName(rawValue: node.name!),
-                    nodeName != .hero, nodeName != .messageBox {
+                    nodeName != .hero, nodeName != .messageBox, nodeName != .dialogBox {
                     node.removeFromParent()
                 }
             }
@@ -280,7 +285,7 @@ extension Hero {
     }
     
     func showBuildBox(scene: SKNode) {
-        if !builderWasShown, codeBlocksCount >= 5, let buildBox = scene.childNode(withName: NodeName.dialogBox.rawValue) {
+        if !builderWasShown, codeBlocksCount >= 10, let buildBox = scene.childNode(withName: NodeName.dialogBox.rawValue) {
             builderWasShown = true
 
             let moveAction: SKAction = .moveTo(y: 0, duration: 2)
@@ -293,12 +298,12 @@ extension Hero {
 // MARK: Format
 extension Hero {
     var c: SKColor { .clear } // transparente
-    var b: SKColor {.black} // cabelo, maos, pes
-    var n: SKColor {.hexadecimal(0xf6e5b5)} // pele
-    var o: SKColor {.hexadecimal(0xb2a684)} // oculos
-    var r: SKColor {.hexadecimal(0xc74545)} // camisa
-    var y: SKColor {.hexadecimal(0xc7c55a)} // cinto
-    var l: SKColor {.hexadecimal(0x25597a)} // calça e manga da blusa
+    var b: SKColor {.hexadecimal(0x362E22)} // cabelo, maos, pes
+    var n: SKColor {.hexadecimal(0xFFE6A0)} // pele
+    var o: SKColor {.hexadecimal(0xD9AE35)} // oculos
+    var r: SKColor {.hexadecimal(0xEF860C)} // camisa
+    var y: SKColor {.hexadecimal(0xF7F534)} // cinto
+    var l: SKColor {.hexadecimal(0x1168F2)} // calça e manga da blusa
     
     var stoppedFramesFormat: [[[SKColor]]] {
        [[ // 1

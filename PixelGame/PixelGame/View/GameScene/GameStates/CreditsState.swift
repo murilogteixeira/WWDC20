@@ -41,7 +41,7 @@ class CreditsState: GKState {
     
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
-        node.color = .hexadecimal(0xC9FFFD)
+        node.color = .hexadecimal(0xE6FFFE)
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue

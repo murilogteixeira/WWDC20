@@ -16,6 +16,7 @@ protocol TouchBarSubscriber: CustomStringConvertible {
     func nextButtonPressed()
     func closeButtonPressed()
     func confirmButtonPressed()
+    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton?)
 }
 
 extension TouchBarSubscriber {
@@ -25,25 +26,23 @@ extension TouchBarSubscriber {
     func nextButtonPressed() {}
     func closeButtonPressed() {}
     func confirmButtonPressed() {}
+    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {}
 }
 
 protocol TouchBarManagerProtocol: ObserverManager {
     var subscribers: [TouchBarSubscriber] { get set }
 }
 
-enum TouchBarNotificationType {
-    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton
+public enum TouchBarNotificationType {
+    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton, numberButton
 }
 
 public class TouchBarManager: TouchBarManagerProtocol {
     
     internal var subscribers: [TouchBarSubscriber] = []
     
-    private var notificationType: TouchBarNotificationType = .none {
-        didSet {
-            notifySubscribers()
-        }
-    }
+    private var notificationType: TouchBarNotificationType = .none
+    private var buttonTapped: NSButton?
     
     public func add<T>(subscriber: T) {
         guard let subscriber = subscriber as? TouchBarSubscriber else { return }
@@ -58,45 +57,13 @@ public class TouchBarManager: TouchBarManagerProtocol {
     }
     
     public func notifySubscribers() {
-        switch notificationType {
-        case .didBegin:
-            subscribers.forEach({$0.didBegin()})
-        case .didEnded:
-            subscribers.forEach({$0.didEnded()})
-        case .prevButton:
-            subscribers.forEach({$0.prevButtonPressed()})
-        case .nextButton:
-            subscribers.forEach({$0.nextButtonPressed()})
-        case .closeButton:
-            subscribers.forEach({$0.closeButtonPressed()})
-        case .confirmButton:
-            subscribers.forEach({$0.confirmButtonPressed()})
-        default:
-            break
-        }
+        subscribers.forEach({$0.buttonTapped(notificationType, with: buttonTapped)})
     }
     
-    public func didBegin() {
-        notificationType = .didBegin
+    public func notify(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+        self.notificationType = notificationType
+        self.buttonTapped = button
+        notifySubscribers()
     }
     
-    public func didEnded() {
-        notificationType = .didEnded
-    }
-    
-    public func prevButton() {
-        notificationType = .prevButton
-    }
-    
-    public func nextButton() {
-        notificationType = .nextButton
-    }
-    
-    public func closeButton() {
-        notificationType = .closeButton
-    }
-    
-    public func confirmButton() {
-        notificationType = .confirmButton
-    }
 }

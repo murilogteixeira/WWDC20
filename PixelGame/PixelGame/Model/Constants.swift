@@ -13,11 +13,11 @@ enum CategoryBitmask: UInt32 {
 }
 
 enum NodeName: String {
-    case hero, bug, floor, wall, dialogBox, messageBox, background, controlNode, label, door, collectable, blocksCountLabel
+    case hero, bug, floor, wall, dialogBox, messageBox, background, controlNode, label, door, collectable, blocksCountLabel, codeScreen
 }
 
 enum NodesZPosition: CGFloat {
-    case background, controlNode, elements, door, character, dialog, floor, bug, codeBlock, messageBox, label
+    case background, controlNode, elements, door, character, dialog, floor, bug, codeBlock, messageBox, codeScreen, label
 }
 
 struct TouchBarConstants {

@@ -234,7 +234,7 @@ public class IntroState: GKState {
     
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
-        node.color = .hexadecimal(0xC9FFFD)
+        node.color = .hexadecimal(0xE6FFFE)
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue
@@ -265,18 +265,22 @@ extension IntroState {
 
 //MARK: TouchBarSubscriberNotifyer
 extension IntroState: TouchBarSubscriber {
-    func didEnded() {
-        currentAction += 1
-        if currentAction < sceneActions.count {
-            runAction(action: sceneActions[currentAction], inNode: scene)
-        }
-        else if !door.isShow {
-            showDoor()
-        }
-    }
     
-    func confirmButtonPressed() {
-        gameScene.stateMachine.enter(GameState.self)
+    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+        switch notificationType {
+        case .didEnded:
+            currentAction += 1
+            if currentAction < sceneActions.count {
+                runAction(action: sceneActions[currentAction], inNode: scene)
+            }
+            else if !door.isShow {
+                showDoor()
+            }
+        case .confirmButton:
+            gameScene.stateMachine.enter(GameState.self)
+        default:
+            break
+        }
     }
     
     public override var description: String { "IntroState" }
@@ -285,40 +289,33 @@ extension IntroState: TouchBarSubscriber {
 //MARK: SKPhysicsContactDelegate
 extension IntroState: SKPhysicsContactDelegate {
     public func didBegin(_ contact: SKPhysicsContact) {
-        let heroName = NodeName.hero.rawValue
-        let floorName = NodeName.floor.rawValue
-        let dialogBoxName = NodeName.dialogBox.rawValue
-        let doorName = NodeName.door.rawValue
+        guard let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
+            let nodeAStringName = nodeA.name, let nodeBStringName = nodeB.name,
+            let nodeNameA = NodeName(rawValue: nodeAStringName), let nodeNameB = NodeName(rawValue: nodeBStringName) else {
+                print("GameState: Contact node has no name: \(contact)")
+            return
+        }
         
-        if let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
-            nodeA.name == heroName && nodeB.name == floorName ||
-                nodeA.name == floorName && nodeB.name == heroName {
-            
-            hero.isOnTheFloor = true
-        }
-        else if let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
-            nodeA.name == dialogBoxName || nodeB.name == dialogBoxName {
-            
-            let dialogBoxNode = (nodeA.name == dialogBoxName ? nodeA : nodeB) as! DialogBox
-            let object = nodeA.name != dialogBoxName ? nodeA : nodeB
-            
-            dialogBoxNode.contact(scene, dialogBoxNode, with: object)
-        }
-        else if let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
-            nodeA.name == doorName && nodeB.name == heroName ||
-                nodeA.name == heroName && nodeB.name == doorName {
-            
-            door.canOpen = true
+        if nodeNameA == .hero || nodeNameB == .hero {
+            guard let hero = (nodeNameA == .hero ? nodeA : nodeB) as? Hero else { return }
+            let object = (nodeNameA != .hero ? nodeA : nodeB)
+
+            hero.contact(scene, hero, object: object)
         }
     }
     
     public func didEnd(_ contact: SKPhysicsContact) {
-        let heroName = NodeName.hero.rawValue
-        let doorName = NodeName.door.rawValue
         
-        if let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
-            nodeA.name == doorName && nodeB.name == heroName ||
-                nodeA.name == heroName && nodeB.name == doorName {
+        guard let nodeA = contact.bodyA.node, let nodeB = contact.bodyB.node,
+            let nodeAStringName = nodeA.name, let nodeBStringName = nodeB.name,
+            let nodeNameA = NodeName(rawValue: nodeAStringName), let nodeNameB = NodeName(rawValue: nodeBStringName) else {
+                print("GameState: Contact node has no name: \(contact)")
+            return
+        }
+        
+        if nodeNameA == .door || nodeNameB == .door {
+            guard let door = (nodeNameA == .door ? nodeA : nodeB) as? Door,
+            let _ = nodeNameA != .door ? nodeA : nodeB as? Hero else { return }
             
             door.canOpen = false
         }

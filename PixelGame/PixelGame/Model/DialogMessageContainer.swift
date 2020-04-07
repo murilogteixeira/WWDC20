@@ -40,7 +40,7 @@ class DialogMessageContainer: SKSpriteNode {
         self.position = position
         
 //        addChild(PixelArtObject(format: format, size: self.size).objectSpriteNode)
-        addChild(SKSpriteNode(color: .black, size: CGSize(width: size, height: size / 1.5)))
+        addChild(SKSpriteNode(color: .black, size: CGSize(width: size, height: size / 1.8)))
         setScale(0)
         name = NodeName.messageBox.rawValue
         zPosition = NodesZPosition.messageBox.rawValue
@@ -72,10 +72,12 @@ extension DialogMessageContainer {
         alpha = 0
         zPosition = NodesZPosition.dialog.rawValue
         scene.addChild(self)
+        let wait: SKAction = .wait(forDuration: 0.3)
         let fadeIn = SKAction.fadeIn(withDuration: 0.3)
         let scaleUp = SKAction.scale(to: 1, duration: 0.3)
-        run(fadeIn)
-        run(scaleUp)
+
+        run(.sequence([wait, fadeIn]))
+        run(.sequence([wait, scaleUp]))
     }
     
     func hidde() {
@@ -94,23 +96,54 @@ extension DialogMessageContainer {
     }
 }
 
+//MARK: TouchBarSubscriber
 extension DialogMessageContainer: TouchBarSubscriber {
-    func prevButtonPressed() {
-        if currentTextIndex > 0 {
-            currentTextIndex -= 1
-            label.text = textDialog[currentTextIndex]
+    
+    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+        switch notificationType {
+        case .prevButton:
+            if currentTextIndex > 0 {
+                currentTextIndex -= 1
+                label.text = textDialog[currentTextIndex]
+            }
+        case .nextButton:
+            if currentTextIndex < textDialog.count-1 {
+                currentTextIndex += 1
+                label.text = textDialog[currentTextIndex]
+            }
+        case . closeButton:
+            hidde()
+        default:
+            break
         }
+        
+        validateButtons()
     }
     
-    func nextButtonPressed() {
-        if currentTextIndex < textDialog.count-1 {
-            currentTextIndex += 1
-            label.text = textDialog[currentTextIndex]
+    func validateButtons() {
+        
+        if let dialogMenuState = TouchBarScene.shared?.stateMachine.currentState as? DialogMenuState {
+            if textDialog.count == 1 {
+                dialogMenuState.prevButton.isEnabled = false
+                dialogMenuState.nextButton.isEnabled = false
+                dialogMenuState.closeButton.isEnabled = true
+            }
+            else if currentTextIndex == 0 {
+                dialogMenuState.prevButton.isEnabled = false
+                dialogMenuState.nextButton.isEnabled = true
+                dialogMenuState.closeButton.isEnabled = false
+            }
+            else if currentTextIndex == textDialog.count - 1 {
+                dialogMenuState.prevButton.isEnabled = true
+                dialogMenuState.nextButton.isEnabled = false
+                dialogMenuState.closeButton.isEnabled = true
+            }
+            else {
+                dialogMenuState.prevButton.isEnabled = true
+                dialogMenuState.nextButton.isEnabled = true
+                dialogMenuState.closeButton.isEnabled = false
+            }
         }
-    }
-    
-    func closeButtonPressed() {
-        hidde()
     }
     
     override var description: String { "DialogMessageContainer" }
