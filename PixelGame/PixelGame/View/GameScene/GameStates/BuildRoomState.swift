@@ -17,15 +17,45 @@ public class BuildRoomState: GKState {
     
     lazy var hero = gameScene.hero
     
+    var currentData = 0
+    let codeScreenData = [
+        [
+            "title": """
+            Organize o código de criação de
+            
+            frutas para nascer na árvore correta
+            """,
+            "codeLines": [
+                0: "let arvore = Arvore()",
+                1: "let fruta = Laranja()",
+                2: "if arvore.fruta == laranja {",
+                3: "  arvore.criarFruta(fruta)",
+                4: "}"
+            ]
+        ],
+        [
+            "title": """
+            Organize o código de criação da
+            
+            casa para colocar os objeto nos
+            
+            locais corretos
+            """,
+            "codeLines": [
+                0: "let casa = Casa()",
+                1: "let objeto = Porta()",
+                2: "if casa.frente.porta != porta {",
+                3: "  casa.frente.addPorta(objeto)",
+                4: "}",
+            ]
+        ],
+    ]
+    
     lazy var codeScreen: CodeScreen = {
         let proportion: CGFloat = 0.6
-        return CodeScreen(size: CGSize(width: scene.size.width * proportion, height: scene.size.height * proportion), codeLines: [
-            0: "adfadf",
-            1: "fagsdf",
-            2: "wrtasf",
-            3: "asfgarw",
-            4: "tfhgf",
-        ])
+        return CodeScreen(position: CGPoint(x: 0, y: scene.frame.size.height * -0.03),
+                          size: CGSize(width: scene.size.width * proportion, height: scene.size.height * proportion),
+                          data: codeScreenData[currentData])
     }()
     
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {

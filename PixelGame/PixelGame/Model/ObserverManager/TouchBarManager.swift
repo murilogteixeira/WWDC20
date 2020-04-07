@@ -34,7 +34,7 @@ protocol TouchBarManagerProtocol: ObserverManager {
 }
 
 public enum TouchBarNotificationType {
-    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton, numberButton
+    case none, didBegin, didEnded, prevButton, nextButton, closeButton, confirmButton, numberButton, playButton
 }
 
 public class TouchBarManager: TouchBarManagerProtocol {
