@@ -190,7 +190,7 @@ public class IntroState: GKState {
     lazy var door: Door = {
         let size = CGSize(width: 60, height: 100)
         let position = CGPoint(x: (scene.size.width / 2) - (size.width), y: -155)
-        let node = Door(size: size, position: position)
+        let node = Door(size: 100, position: position)
         return node
     }()
     
@@ -255,11 +255,17 @@ public class IntroState: GKState {
 
 extension IntroState {
     func showDoor() {
+        
+        guard door.parent == nil else { return }
+        door.alpha = 0
         scene.addChild(door)
+        door.run(.fadeAlpha(to: 1, duration: 0.5))
         door.isShow = true
     }
     
     func hiddeDoor() {
+        
+        guard door.parent != nil else { return }
         door.removeFromParent()
         door.isShow = false
     }

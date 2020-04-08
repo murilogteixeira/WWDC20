@@ -22,17 +22,23 @@ public class Door: SKSpriteNode {
         }
     }
     
-    convenience init(size: CGSize, position: CGPoint) {
+    convenience init(size: CGFloat, position: CGPoint) {
         self.init()
         self.position = position
-        self.size = size
+        self.size = CGSize(width: size, height: size)
         name = NodeName.door.rawValue
         color = .black
         zPosition = NodesZPosition.door.rawValue
-        physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: size.width / 4, height: size.height))
+        physicsBody = SKPhysicsBody(rectangleOf: self.size)
         physicsBody?.affectedByGravity = false
         physicsBody?.mass = 0.0000000001
                 
+        setupPhysicsBody()
+        
+        texture = PixelArtObject(format: format, size: self.size).objectTexture
+    }
+    
+    func setupPhysicsBody() {
         let heroCategory = CategoryBitmask.hero.rawValue
         let doorCategory = CategoryBitmask.door.rawValue
         let noneCategory = CategoryBitmask.none.rawValue
@@ -40,5 +46,33 @@ public class Door: SKSpriteNode {
         physicsBody?.categoryBitMask = doorCategory
         physicsBody?.contactTestBitMask = heroCategory
         physicsBody?.collisionBitMask = noneCategory
+    }
+}
+
+extension Door {
+    var y: SKColor { .hexadecimal(0xd2b625) }
+    var format: [[SKColor]] {
+        [
+            [c,c,c,c,b,b,b,b,b,b,c,c,c,c],
+            [c,c,b,b,b,b,b,b,b,b,b,b,c,c],
+            [c,b,b,b,b,b,b,b,b,b,b,b,b,c],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,y,y,b,b,b,b,b,b,b,b,b,b],
+            [b,b,y,y,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+            [b,b,b,b,b,b,b,b,b,b,b,b,b,b],
+        ]
     }
 }

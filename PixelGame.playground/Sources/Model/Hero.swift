@@ -285,7 +285,7 @@ extension Hero {
     }
     
     func showBuildBox(scene: SKNode) {
-        if !builderWasShown, codeBlocksCount >= 1, let buildBox = scene.childNode(withName: NodeName.dialogBox.rawValue) {
+        if !builderWasShown, codeBlocksCount >= 10, let buildBox = scene.childNode(withName: NodeName.dialogBox.rawValue) {
             builderWasShown = true
 
             let moveAction: SKAction = .moveTo(y: 0, duration: 2)
