@@ -14,6 +14,7 @@ public class GameState: GKState {
     unowned let gameScene: GameScene
     lazy var controlNode: SKNode = gameScene.controlNode
     lazy var scene: SKSpriteNode = buildScene()
+    private var _subscriberName: String!
     
     lazy var hero = gameScene.hero
     
@@ -74,7 +75,7 @@ public class GameState: GKState {
             3/3
             """,
         ]
-        let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog)
+        let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog, name: "finishDialog")
         return node
     }()
     
@@ -104,7 +105,7 @@ public class GameState: GKState {
     
     lazy var door: Door = {
         let size = CGSize(width: 60, height: 100)
-        let position = CGPoint(x: (scene.size.width / 2) - (size.width / 2), y: -150)
+        let position = CGPoint(x: (scene.size.width / 2) - (size.width), y: -155)
         let node = Door(size: size, position: position)
         return node
     }()
@@ -130,6 +131,9 @@ public class GameState: GKState {
         
         scene.addChild(hero)
         hero.position = hero.initialPosition
+        hero.builderWasShown = false
+        hero.codeBlocksCount = 0
+        codeBlocksCollectedLabel.text = "0"
         
         scene.addChild(codeBlocksCollectedLabel)
         scene.addChild(buildBox)
@@ -139,10 +143,13 @@ public class GameState: GKState {
         
         TouchBarView.manager.add(subscriber: self)
         TouchBarScene.shared?.stateMachine.enter(IdleState.self)
+        
+        hiddeDoor()
     }
     
     //MARK: WillExit
     public override func willExit(to nextState: GKState) {
+
         self.scene.removeAllChildren()
         self.scene.removeFromParent()
         
@@ -166,6 +173,7 @@ public class GameState: GKState {
     public init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
+        self._subscriberName = "GameState"
     }
 }
 
@@ -192,11 +200,19 @@ extension GameState {
 
 //MARK: TouchBarSubscriber
 extension GameState: TouchBarSubscriber {
+    public var subscriberName: String {
+        get {
+            self._subscriberName
+        }
+        set {
+            self._subscriberName = newValue
+        }
+    }
+    
     
     public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         switch notificationType {
         case .didEnded:
-            guard door.parent == nil else { return }
             showDoor()
         case .confirmButton:
             gameScene.stateMachine.enter(BuildRoomState.self)
@@ -210,11 +226,14 @@ extension GameState: TouchBarSubscriber {
 
 extension GameState {
     func showDoor() {
+
+        guard door.parent == nil else { return }
         scene.addChild(door)
         door.isShow = true
     }
     
     func hiddeDoor() {
+        guard door.parent != nil else { return }
         door.removeFromParent()
         door.isShow = false
     }

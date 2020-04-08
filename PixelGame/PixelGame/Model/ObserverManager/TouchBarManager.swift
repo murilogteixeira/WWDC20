@@ -9,23 +9,12 @@
 import SpriteKit
 import GameplayKit
 
-protocol TouchBarSubscriber: CustomStringConvertible {
-    func didBegin()
-    func didEnded()
-    func prevButtonPressed()
-    func nextButtonPressed()
-    func closeButtonPressed()
-    func confirmButtonPressed()
+public protocol TouchBarSubscriber: CustomStringConvertible {
+    var subscriberName: String { get set }
     func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton?)
 }
 
 extension TouchBarSubscriber {
-    func didBegin() {}
-    func didEnded() {}
-    func prevButtonPressed() {}
-    func nextButtonPressed() {}
-    func closeButtonPressed() {}
-    func confirmButtonPressed() {}
     func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {}
 }
 
@@ -38,7 +27,6 @@ public enum TouchBarNotificationType {
 }
 
 public class TouchBarManager: TouchBarManagerProtocol {
-    
     internal var subscribers: [TouchBarSubscriber] = []
     
     private var notificationType: TouchBarNotificationType = .none
@@ -50,9 +38,17 @@ public class TouchBarManager: TouchBarManagerProtocol {
         print("TouchBarManager: Subscriber added: \(subscriber)")
     }
     
-    public func remove<T>(subscriber filter: T) {
-        guard let filter = filter as? (TouchBarSubscriber) -> Bool,
-            let index = subscribers.firstIndex(where: filter) else { return }
+//    public func remove<T>(subscriber filter: T) {
+//        guard let filter = filter as? (TouchBarSubscriber) -> Bool,
+//            let index = subscribers.firstIndex(where: filter) else { return }
+//        
+//        subscribers.remove(at: index)
+//    }
+    
+    func remove<T>(subscriber: T) {
+        guard let filter = subscriber as? TouchBarSubscriber,
+            let index = subscribers.firstIndex(where: {$0.subscriberName == filter.subscriberName}) else { return }
+        print("TouchBarManager: Subscriber removed: \(subscribers[index])")
         subscribers.remove(at: index)
     }
     

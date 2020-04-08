@@ -9,6 +9,7 @@
 import SpriteKit
 
 public class CodeScreen: SKSpriteNode {
+    private var _subscriberName: String!
     
     private var currentIndex = 0
     private var codeLines: [[String:Any]]!
@@ -26,13 +27,14 @@ public class CodeScreen: SKSpriteNode {
     
     var timer: Timer?
     
-    convenience init(position: CGPoint, size: CGSize, codeLines: [[String:Any]]) {
+    convenience init(position: CGPoint, size: CGSize, codeLines: [[String:Any]], name: String) {
         self.init()
+        self._subscriberName = name
         self.codeLines = codeLines
         self.size = size
         self.position = position
         color = .black
-        name = NodeName.codeScreen.rawValue
+        self.name = NodeName.codeScreen.rawValue
         zPosition = NodesZPosition.codeScreen.rawValue
                 
 //        update()
@@ -104,6 +106,15 @@ public class CodeScreen: SKSpriteNode {
 }
 
 extension CodeScreen: TouchBarSubscriber {
+    public var subscriberName: String {
+        get {
+            self._subscriberName
+        }
+        set {
+            self._subscriberName = newValue
+        }
+    }
+    
     public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         guard let button = button else { return }
         
@@ -186,7 +197,7 @@ extension CodeScreen: TouchBarSubscriber {
         
         if organized {
             currentIndex += 1
-            flash(with: .green, timeInterval: 0.1) {
+            flash(with: .hexadecimal(0x50AC3A), timeInterval: 0.1) {
                 GameScene.shared.stateMachine.enter(GameState.self)
             }
         }

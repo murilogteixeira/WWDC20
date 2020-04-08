@@ -91,7 +91,7 @@ public class BuildRoomState: GKState {
         let widthProportion: CGFloat = 0.6
         return CodeScreen(position: CGPoint(x: 0, y: 0),
                           size: CGSize(width: scene.size.width * widthProportion, height: scene.size.height * heightProportion),
-                          codeLines: codeScreenData)
+                          codeLines: codeScreenData, name: "codeScreen")
     }()
     
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
