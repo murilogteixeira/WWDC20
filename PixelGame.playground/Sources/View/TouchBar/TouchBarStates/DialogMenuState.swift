@@ -23,7 +23,8 @@ public class DialogMenuState: GKState {
     }()
     
     @objc func prevButtonAction() {
-        TouchBarView.manager.prevButton()
+//        TouchBarView.manager.prevButton()
+        TouchBarView.manager.notify(.prevButton, with: prevButton)
     }
     
     lazy var nextButton: NSButton = {
@@ -35,7 +36,7 @@ public class DialogMenuState: GKState {
     }()
     
     @objc func nextButtonAction() {
-        TouchBarView.manager.nextButton()
+        TouchBarView.manager.notify(.nextButton, with: nextButton)
     }
     
     lazy var closeButton: NSButton = {
@@ -47,7 +48,8 @@ public class DialogMenuState: GKState {
     }()
     
     @objc func closeButtonAction() {
-        TouchBarView.manager.closeButton()
+//        TouchBarView.manager.closeButton()
+        TouchBarView.manager.notify(.closeButton, with: closeButton)
         touchBarScene.stateMachine.enter(IdleState.self)
     }
     
@@ -89,7 +91,7 @@ extension DialogMenuState {
             TouchBarView.shared.addSubview(state.nextButton)
             TouchBarView.shared.addSubview(state.closeButton)
         }
-        TouchBarView.manager.didBegin()
+        TouchBarView.manager.notify(.didBegin)
     }
     
     func hiddeButtons() {
@@ -97,7 +99,7 @@ extension DialogMenuState {
         nextButton.removeFromSuperview()
         closeButton.removeFromSuperview()
         touchBarScene.resetLabel()
-        TouchBarView.manager.didEnded()
+        TouchBarView.manager.notify(.didEnded)
     }
     
 }

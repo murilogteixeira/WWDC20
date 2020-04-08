@@ -46,23 +46,23 @@ class DialogBox: SKSpriteNode {
 
 // MARK: Handle Physic Contact
 extension DialogBox {
-    func contact(_ scene: SKSpriteNode, _ dialogBox: SKNode, with object: SKNode) {
-        
-        guard let dialogContainer = dialogContainer else { return }
-        
-        dialogBox.destroy(fadeOut: 0.4)
-        
-        if object.name == NodeName.hero.rawValue {
-
-            dialogContainer.show(in: sceneParent)
-            
-            if GameScene.shared.stateMachine.currentState is GameState {
-                print("teste")
-            }
-            
-        }
-        
-    }
+//    func contact(_ scene: SKSpriteNode, _ dialogBox: SKNode, with object: SKNode) {
+//        
+//        guard let dialogContainer = dialogContainer else { return }
+//        
+//        dialogBox.destroy(fadeOut: 0.4)
+//        
+//        if object.name == NodeName.hero.rawValue {
+//
+//            dialogContainer.show(in: sceneParent)
+//            
+//            if GameScene.shared.stateMachine.currentState is GameState {
+//                print("teste")
+//            }
+//            
+//        }
+//        
+//    }
 }
 
 //MARK: Format

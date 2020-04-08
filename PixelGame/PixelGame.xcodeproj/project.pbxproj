@@ -11,6 +11,8 @@
 		692217E7243AE3D90046C980 /* TBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217E6243AE3D90046C980 /* TBView.swift */; };
 		692217E9243BFD060046C980 /* CodeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217E8243BFD060046C980 /* CodeScreen.swift */; };
 		692217EB243C23D10046C980 /* OrganizeCodeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217EA243C23D10046C980 /* OrganizeCodeLine.swift */; };
+		692217ED243D54180046C980 /* SKShapeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217EC243D54170046C980 /* SKShapeNode.swift */; };
+		692217EF243D58810046C980 /* NSButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692217EE243D58810046C980 /* NSButton.swift */; };
 		6924263C2434DB3600387526 /* Door.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263B2434DB3600387526 /* Door.swift */; };
 		6924263E2434DF3700387526 /* DialogMessageContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6924263D2434DF3700387526 /* DialogMessageContainer.swift */; };
 		69340820243547A500533B10 /* TouchBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6934081F243547A500533B10 /* TouchBarManager.swift */; };
@@ -50,6 +52,8 @@
 		692217E6243AE3D90046C980 /* TBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBView.swift; sourceTree = "<group>"; };
 		692217E8243BFD060046C980 /* CodeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeScreen.swift; sourceTree = "<group>"; };
 		692217EA243C23D10046C980 /* OrganizeCodeLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizeCodeLine.swift; sourceTree = "<group>"; };
+		692217EC243D54170046C980 /* SKShapeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKShapeNode.swift; sourceTree = "<group>"; };
+		692217EE243D58810046C980 /* NSButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSButton.swift; sourceTree = "<group>"; };
 		6924263B2434DB3600387526 /* Door.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Door.swift; sourceTree = "<group>"; };
 		6924263D2434DF3700387526 /* DialogMessageContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogMessageContainer.swift; sourceTree = "<group>"; };
 		6934081F243547A500533B10 /* TouchBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchBarManager.swift; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 				69A763B624338D960063BBD0 /* TouchBar.swift */,
 				698C863C2438C39C006EC5A0 /* SKNode.swift */,
 				692217C2243A9D2F0046C980 /* SKSpriteNode.swift */,
+				692217EC243D54170046C980 /* SKShapeNode.swift */,
+				692217EE243D58810046C980 /* NSButton.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -323,6 +329,7 @@
 				692217E7243AE3D90046C980 /* TBView.swift in Sources */,
 				69A763B524338D830063BBD0 /* Color.swift in Sources */,
 				69D4951D2436749300AA71E5 /* TouchBarScene.swift in Sources */,
+				692217EF243D58810046C980 /* NSButton.swift in Sources */,
 				69D49522243678BF00AA71E5 /* IdleState.swift in Sources */,
 				695DCA6224368C6A00415916 /* AlertState.swift in Sources */,
 				698C863D2438C39C006EC5A0 /* SKNode.swift in Sources */,
@@ -343,6 +350,7 @@
 				6924263C2434DB3600387526 /* Door.swift in Sources */,
 				69A763B724338D960063BBD0 /* TouchBar.swift in Sources */,
 				69A763A524338CA80063BBD0 /* PixelArtObject.swift in Sources */,
+				692217ED243D54180046C980 /* SKShapeNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,6 +17,8 @@ public class GameViewController: NSViewController {
         
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        TouchBarView.shared = TouchBarView(frame: CGRect(x: 0, y: 0, width: 685, height: 30))
 
         if let view = self.skView {
             // Load GameScene

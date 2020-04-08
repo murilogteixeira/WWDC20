@@ -155,7 +155,7 @@ public class GameState: GKState {
     
     func buildScene() -> SKSpriteNode {
         let node = SKSpriteNode()
-        node.color = .hexadecimal(0xC9FFFD)
+        node.color = .hexadecimal(0xE6FFFE)
         node.size = gameScene.size
         node.zPosition = NodesZPosition.background.rawValue
         node.name = NodeName.background.rawValue
@@ -191,13 +191,17 @@ extension GameState {
 
 //MARK: TouchBarSubscriber
 extension GameState: TouchBarSubscriber {
-    func didEnded() {
-        guard door.parent == nil else { return }
-        showDoor()
-    }
     
-    func confirmButtonPressed() {
-        gameScene.stateMachine.enter(BuildRoomState.self)
+    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+        switch notificationType {
+        case .didEnded:
+            guard door.parent == nil else { return }
+            showDoor()
+        case .confirmButton:
+            gameScene.stateMachine.enter(BuildRoomState.self)
+        default:
+            break
+        }
     }
     
     public override var description: String { "GameState" }

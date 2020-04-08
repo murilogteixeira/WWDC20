@@ -17,7 +17,7 @@ class TouchBarView: SKView {
     private override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         
-        showsNodeCount = true
+//        showsNodeCount = true
         presentScene(tbScene)
     }
         

@@ -13,10 +13,10 @@ sceneView.presentScene(scene)
 let vc = GameViewController()
 vc.view = sceneView
 
-if let view = vc.view as? SKView {
-    view.showsPhysics = true
-    view.showsNodeCount = true
-    view.showsFPS = true
-}
+//if let view = vc.view as? SKView {
+//    view.showsPhysics = true
+//    view.showsNodeCount = true
+//    view.showsFPS = true
+//}
 
 PlaygroundPage.current.liveView = vc.view

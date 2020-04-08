@@ -26,7 +26,8 @@ public class TouchBarScene: SKScene {
         IdleState(touchBarScene: self),
         AlertState(touchBarScene: self),
         DialogMenuState(touchBarScene: self),
-        ConfirmState(touchBarScene: self)
+        ConfirmState(touchBarScene: self),
+        OrganizeCodeLine(touchBarScene: self),
     ]
 
     lazy var sceneTB: SKShapeNode = {

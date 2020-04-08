@@ -22,6 +22,8 @@ public class IdleState: GKState {
             return true
         case is ConfirmState.Type:
             return true
+        case is OrganizeCodeLine.Type:
+            return true
         default:
             return false
         }
@@ -29,6 +31,7 @@ public class IdleState: GKState {
     
     public override func didEnter(from previousState: GKState?) {
         touchBarScene.resetLabel()
+//        touchBarScene.stateMachine.enter(OrganizeCodeLine.self)
     }
     
     public override func willExit(to nextState: GKState) {

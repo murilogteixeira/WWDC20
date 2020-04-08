@@ -9,16 +9,19 @@
 import SpriteKit
 
 class TouchBarView: SKView {
-    static var shared = TouchBarView(frame: CGRect(x: 0, y: 0, width: 685, height: 30))
+    static var shared: TouchBarView!
     static var manager = TouchBarManager()
     
-    lazy var tbScene = TouchBarScene(size: frame.size)
+    var tbScene: TouchBarScene! {
+        didSet {
+            print("iniciou")
+        }
+    }
     
-    private override init(frame frameRect: NSRect) {
+    public override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        
-        showsNodeCount = true
-        presentScene(tbScene)
+        TouchBarScene.shared = TouchBarScene(size: frame.size)
+        presentScene(TouchBarScene.shared)
     }
         
     required init?(coder: NSCoder) {

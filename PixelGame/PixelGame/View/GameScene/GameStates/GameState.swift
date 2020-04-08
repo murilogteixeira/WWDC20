@@ -138,6 +138,7 @@ public class GameState: GKState {
         initBugs()
         
         TouchBarView.manager.add(subscriber: self)
+        TouchBarScene.shared?.stateMachine.enter(IdleState.self)
     }
     
     //MARK: WillExit
@@ -192,7 +193,7 @@ extension GameState {
 //MARK: TouchBarSubscriber
 extension GameState: TouchBarSubscriber {
     
-    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+    public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         switch notificationType {
         case .didEnded:
             guard door.parent == nil else { return }

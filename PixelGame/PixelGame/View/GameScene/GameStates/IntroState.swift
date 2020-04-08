@@ -266,7 +266,7 @@ extension IntroState {
 //MARK: TouchBarSubscriberNotifyer
 extension IntroState: TouchBarSubscriber {
     
-    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+    public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         switch notificationType {
         case .didEnded:
             currentAction += 1

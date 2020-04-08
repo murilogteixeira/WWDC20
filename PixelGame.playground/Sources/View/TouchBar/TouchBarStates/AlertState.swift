@@ -38,12 +38,13 @@ public class AlertState: GKState {
     @objc func tap() {
         atentionColor.invalidate()
         scene.fillColor = .black
-        label.fontColor = .green
+        label.fontColor = .cyan
         label.position = .zero
         
         currentString += 1
         guard currentString < strings.count else {
             self.touchBarScene.stateMachine.enter(DialogMenuState.self)
+            TouchBarView.manager.notify(.didBegin)
             return
         }
         
@@ -51,8 +52,8 @@ public class AlertState: GKState {
         alignLabel()
                 
         if currentString == 1 {
-            label.fontColor = .cyan
-            touchBarScene.notifyTouchBar(color: .cyan, duration: 0.075)
+            label.fontColor = .green
+            touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
             tapReceiver.isEnabled = false
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.75) {
@@ -61,12 +62,12 @@ public class AlertState: GKState {
                 
                 self.label.text = self.strings[self.currentString]
                 self.alignLabel()
-                self.touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
-                self.label.fontColor = .green
+                self.touchBarScene.notifyTouchBar(color: .cyan, duration: 0.075)
+                self.label.fontColor = .cyan
             }
         }
         else {
-            touchBarScene.notifyTouchBar(color: .green, duration: 0.075)
+            touchBarScene.notifyTouchBar(color: .cyan, duration: 0.075)
         }
     }
     
@@ -81,10 +82,10 @@ public class AlertState: GKState {
 
             let toPositionX = -label.frame.size.width + ((scene.frame.size.width / 2) * 0.8)
 
-//            let duration = TimeInterval(label.frame.size.width * 0.005952380952380952)
+            let duration = TimeInterval(label.frame.size.width * 0.0025)
 
-            let moveLeft: SKAction = .moveTo(x: toPositionX, duration: 4)
-            let moveRight: SKAction = .moveTo(x: positionX, duration: 4)
+            let moveLeft: SKAction = .moveTo(x: toPositionX, duration: duration)
+            let moveRight: SKAction = .moveTo(x: positionX, duration: duration)
             let wait: SKAction = .wait(forDuration: 0.8)
             let sequence: SKAction = .sequence([wait, moveLeft, wait, moveRight])
             label.run(.repeatForever(sequence))
@@ -94,7 +95,7 @@ public class AlertState: GKState {
         }
     }
     
-    let colors: [SKColor] = [.green, .black, .white]
+    let colors: [SKColor] = [.cyan, .black, .white]
     var currentColor = 0
     lazy var atentionColor = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { _ in
         self.scene.fillColor = self.colors[self.currentColor]

@@ -87,8 +87,7 @@ public class OrganizeCodeLine: GKState {
     private lazy var button6: NSButton = {
         let button = NSButton(title: "▶︎", target: self, action: #selector(tapButton6))
         button.font = NSFont(name: kFontName, size: 12)
-        button.bezelColor = .hexadecimal(0x15CE5A)//15CE5A / 37E519
-        button.contentTintColor = .white
+        button.bezelColor = .hexadecimal(0x15CE5A)
         return button
     }()
 
@@ -107,13 +106,11 @@ public class OrganizeCodeLine: GKState {
 
     public override func didEnter(from previousState: GKState?) {
         currentPositionX = initialPositionX
-        touchBarScene.label.isHidden = true
         showButtons()
     }
 
     public override func willExit(to nextState: GKState) {
-        touchBarScene.label.isHidden = false
-        removeButtons()
+        hiddeButtons()
     }
 
     init(touchBarScene: TouchBarScene) {
@@ -123,66 +120,38 @@ public class OrganizeCodeLine: GKState {
 }
 
 extension OrganizeCodeLine {
-    
-    private func showButtons() {
+    func showButtons() {
         
-//        guard let buildRoomState = GameScene.shared.stateMachine.currentState as? BuildRoomState else { return }
-//
-//        buttonOrder = buildRoomState.codeScreen.labelOrder
+        touchBarScene.notifyTouchBar(color: .white, duration: 0.075)
+        
+        touchBarScene.moveLabel { [weak self] in
+            guard let state = self, let buildRoomState = GameScene.shared.stateMachine.currentState as? BuildRoomState else { return }
 
-        TouchBarScene.shared.notifyTouchBar(color: .white, duration: 0.1)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//            self.currentPositionX = self.initialPositionX
-//
-//            for i in 0..<self.buttons.count {
-//                let index = self.buttonOrder[i]
-//                self.buttons[index].frame = CGRect(x: self.currentPositionX, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-//                TouchBarView.shared.addSubview(self.buttons[self.buttonOrder[i]])
-//                self.currentPositionX += 75
-//            }
-//
-//            self.currentPositionX += 30
-//            self.button6.frame = CGRect(x: self.currentPositionX, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-//
-//            TouchBarView.shared.addSubview(self.button6)
-//        }
-        reorderButtons { button in
-            TouchBarView.shared.addSubview(button)
+            state.buttonOrder = buildRoomState.codeScreen.labelOrder
+                
+            
+            for i in 0..<state.buttons.count {
+                let index = state.buttonOrder[i]
+                state.buttons[index].frame = CGRect(x: state.currentPositionX, y: 0, width: state.buttonSize.width, height: state.buttonSize.height)
+                TouchBarView.shared.addSubview(state.buttons[state.buttonOrder[i]])
+                state.currentPositionX += 75
+            }
+            
+            state.currentPositionX += 30
+            state.button6.frame = CGRect(x: state.currentPositionX, y: 0, width: state.buttonSize.width, height: state.buttonSize.height)
+            TouchBarView.shared.addSubview(state.button6)
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.button6.frame = CGRect(x: self.initialPositionX + (75*5) + 30, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-
-            TouchBarView.shared.addSubview(self.button6)
-        }
-        
         TouchBarView.manager.notify(.didBegin)
     }
-    
-    func reorderButtons(completion: ((NSButton) -> Void)? = nil) {
-        guard let buildRoomState = GameScene.shared.stateMachine.currentState as? BuildRoomState else { return }
-        buttonOrder = buildRoomState.codeScreen.labelOrder
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.currentPositionX = self.initialPositionX
-            
-            for i in 0..<self.buttons.count {
-                let index = self.buttonOrder[i]
-                self.buttons[index].frame = CGRect(x: self.currentPositionX, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-                self.currentPositionX += 75
-                completion?(self.buttons[self.buttonOrder[i]])
-            }
-        }
-    }
-
-    func hiddeButtons(undo: Bool = false) {
-        buttons.forEach{$0.isHidden = !undo}
-        button6.isHidden = !undo
-    }
-
-    private func removeButtons() {
-        buttons.forEach{$0.removeFromSuperview()}
-        button6.removeFromSuperview()
+    func hiddeButtons() {
+        button1.removeFromSuperview()
+        button2.removeFromSuperview()
+        button3.removeFromSuperview()
+        button4.removeFromSuperview()
+        button5.removeFromSuperview()
+        touchBarScene.resetLabel()
         TouchBarView.manager.notify(.didEnded)
     }
+
 }
