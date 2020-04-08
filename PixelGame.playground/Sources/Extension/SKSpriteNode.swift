@@ -9,12 +9,12 @@
 import SpriteKit
 
 extension SKSpriteNode {
-    func flash(with color: SKColor, count: Int = 3, colorBlendFactor: CGFloat = 1) {
+    func flash(with color: SKColor, count: Int = 3, colorBlendFactor: CGFloat = 1, timeInterval: TimeInterval = 0.05, completion: (() -> Void)? = nil) {
         let toColor: SKAction = .colorize(with: color, colorBlendFactor: colorBlendFactor, duration: 0)
-        let discolor: SKAction = .colorize(withColorBlendFactor: 0, duration: 0)
-        let wait: SKAction = .wait(forDuration: 0.05)
+        let discolor: SKAction = .colorize(with: self.color, colorBlendFactor: self.colorBlendFactor, duration: 0)
+        let wait: SKAction = .wait(forDuration: timeInterval)
         let sequence: SKAction = .sequence([toColor, wait, discolor, wait])
         
-        run(.repeat(sequence, count: count))
+        run(.sequence([.repeat(sequence, count: count), .run(completion ?? {})]))
     }
 }

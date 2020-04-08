@@ -55,7 +55,7 @@ public class GameScene: SKScene {
         stateMachine.enter(IntroState.self)
         
         // <-- Apagar
-//        stateMachine.enter(BuildRoomState.self)
+//        stateMachine.enter(GameState.self)
 //        TouchBarScene.showAlert = false
         // -->
         

@@ -10,6 +10,8 @@ import Cocoa
 import SpriteKit
 
 class DialogMessageContainer: SKSpriteNode {
+    private var _subscriberName: String!
+    
     var textDialog = [String]()
     var currentTextIndex = 0
     
@@ -28,29 +30,31 @@ class DialogMessageContainer: SKSpriteNode {
         return label
     }()
     
-    var isShow = false {
-        didSet {
-        }
-    }
+    var isShow = false
     
-    convenience init(position: CGPoint, size: CGFloat, textDialog: [String]) {
+    convenience init(position: CGPoint, size: CGFloat, textDialog: [String], name: String) {
         self.init()
+        self.subscriberName = name
         self.textDialog = textDialog
-        self.size = CGSize(width: size, height: size)
+//        self.size = CGSize(width: size, height: size)
         self.position = position
         
-//        addChild(PixelArtObject(format: format, size: self.size).objectSpriteNode)
-        addChild(SKSpriteNode(color: .black, size: CGSize(width: size, height: size / 1.8)))
-        setScale(0)
-        name = NodeName.messageBox.rawValue
+//        texture = PixelArtObject(format: format, size: self.size).objectTexture
+        color = .black
+        
+        self.name = NodeName.messageBox.rawValue
         zPosition = NodesZPosition.messageBox.rawValue
         
         label.text = textDialog[currentTextIndex]
         self.addChild(label)
-    }
-    
-    deinit {
-        print("deinit")
+        
+//        let proportionWidth: CGFloat = 1.2
+//        let proportionHeight: CGFloat = 1.3
+//        self.size = CGSize(width: label.frame.size.width * proportionWidth, height: label.frame.size.height * proportionHeight)
+                
+        updateSize()
+        
+        setScale(0)
     }
     
 }
@@ -68,6 +72,7 @@ extension DialogMessageContainer {
         }
         
         currentTextIndex = 0
+        label.text = textDialog[currentTextIndex]
         isShow = true
         alpha = 0
         zPosition = NodesZPosition.dialog.rawValue
@@ -78,6 +83,8 @@ extension DialogMessageContainer {
 
         run(.sequence([wait, fadeIn]))
         run(.sequence([wait, scaleUp]))
+        
+        validateButtons()
     }
     
     func hidde() {
@@ -85,19 +92,32 @@ extension DialogMessageContainer {
 
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
         let scaleDown = SKAction.scale(to: 0, duration: 0.3)
-        let positionDown = SKAction.moveTo(y: position.y - 80, duration: 0.3)
         let remove = SKAction.run { [weak self] in
             self?.removeFromParent()
         }
         run(fadeOut)
-        run(scaleDown)
-        run(.sequence([positionDown, remove]))
+        run(.sequence([scaleDown, remove]))
         isShow = false
+    }
+    
+    func updateSize() {
+        let proportionWidth: CGFloat = 1.2
+        let proportionHeight: CGFloat = 1.4
+        self.size = CGSize(width: label.frame.size.width + 80, height: label.frame.size.height + 80)
     }
 }
 
 //MARK: TouchBarSubscriber
 extension DialogMessageContainer: TouchBarSubscriber {
+    var subscriberName: String {
+        get {
+            self._subscriberName
+        }
+        set {
+            self._subscriberName = newValue
+        }
+    }
+    
     
     func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         switch notificationType {
@@ -116,7 +136,7 @@ extension DialogMessageContainer: TouchBarSubscriber {
         default:
             break
         }
-        
+        updateSize()
         validateButtons()
     }
     

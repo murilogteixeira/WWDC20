@@ -15,7 +15,7 @@ protocol TouchBarSceneDelegate: AnyObject {
 }
 
 public class TouchBarScene: SKScene {
-    static var shared: TouchBarScene?
+    static var shared: TouchBarScene!
     static var showAlert = true
     
     weak var delegateTB: TouchBarSceneDelegate?
@@ -55,7 +55,7 @@ public class TouchBarScene: SKScene {
     public override func didMove(to view: SKView) {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         addChild(sceneTB)
-        backgroundColor = .black
+//        backgroundColor = .black
         addChild(label)
         stateMachine.enter(IdleState.self)
     }
@@ -66,7 +66,8 @@ public class TouchBarScene: SKScene {
     
     public override init(size: CGSize) {
         super.init(size: size)
-        TouchBarScene.shared = self
+        backgroundColor = .black
+//        TouchBarScene.shared = self
     }
     
     public required init?(coder aDecoder: NSCoder) {

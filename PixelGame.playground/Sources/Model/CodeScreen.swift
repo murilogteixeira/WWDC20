@@ -9,86 +9,63 @@
 import SpriteKit
 
 public class CodeScreen: SKSpriteNode {
+    private var _subscriberName: String!
     
-    private var codeLines: [Int:String]!
+    private var currentIndex = 0
+    private var codeLines: [[String:Any]]!
     
-    private let initialY: CGFloat = 20
+    private let initialY: CGFloat = 52.5
     private lazy var currentY = initialY
+    
+    private let initialStrokeColor: SKColor = .hexadecimal(0xD0D0D0)
+    private let initialLineWidth: CGFloat = 1
     
     var lines = [Int:SKShapeNode]()
     var labelOrder = [Int]()
     
     var buttonsPressed = [NSButton]()
     
-    lazy var titleLabel: SKLabelNode = {
-        let label = SKLabelNode(fontNamed: kFontName)
-        label.position = CGPoint(x: 0, y: size.height * 0.65)
-        label.fontColor = .black
-        label.fontSize = 10
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 0
-        label.verticalAlignmentMode = .center
-        label.horizontalAlignmentMode = .center
-        return label
-    }()
+    var timer: Timer?
     
-    lazy var intructionLabel: SKLabelNode = {
-        let label = SKLabelNode(fontNamed: kFontName)
-        label.text = """
-        Selecione na iTool a linha de origem e
-        
-         depois selecione a linha de destino
-        
-              para organizar o código!
-        """
-        label.position = CGPoint(x: 0, y: size.height * 0.3)
-        label.fontColor = .white
-        label.fontSize = 9
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 0
-        label.verticalAlignmentMode = .center
-        label.horizontalAlignmentMode = .center
-        return label
-    }()
-    
-    convenience init(position: CGPoint, size: CGSize, data: [String:Any]) {
+    convenience init(position: CGPoint, size: CGSize, codeLines: [[String:Any]], name: String) {
         self.init()
+        self._subscriberName = name
+        self.codeLines = codeLines
         self.size = size
         self.position = position
         color = .black
-        name = NodeName.codeScreen.rawValue
+        self.name = NodeName.codeScreen.rawValue
         zPosition = NodesZPosition.codeScreen.rawValue
-        
-        addChild(titleLabel)
-        addChild(intructionLabel)
-        
-        initData(data)
+                
+//        update()
         generateLabels()
-        shuffleLabels()
-        insertPositionY()
         insertCodeLines()
+
     }
     
-    private func initData(_ data: [String:Any]) {
-        guard let title = data["title"] as? String,
-            let codeLines = data["codeLines"] as? [Int:String] else { return }
-        self.titleLabel.text = title
-        self.codeLines = codeLines
+    func update() {
+//        generateLabels()
+//        insertCodeLines()
+        shuffleLabels()
+        insertPositionY()
+        (TouchBarScene.shared.stateMachine.currentState as? OrganizeCodeLine)?.reorderButtons()
     }
     
     private func generateLabels() {
-        for (key, value) in codeLines {
+        guard let codeLine = codeLines[currentIndex]["codeLines"] as? [Int:String] else { return }
+        for (key, value) in codeLine {
             let label = SKLabelNode(fontNamed: kFontName)
             label.fontSize = 10
-            label.fontColor = .green
+            label.fontColor = .hexadecimal(0x37E519)
             label.text = "\(key + 1)  \(value)"
             label.horizontalAlignmentMode = .left
             label.verticalAlignmentMode = .center
             label.name = "\(key)"
             
-            let line = SKShapeNode(rect: CGRect(x: 0, y: 0, width: size.width * 0.825, height: 25), cornerRadius: 4)
+            let line = SKShapeNode(rect: CGRect(x: 0, y: 0, width: size.width * 0.825, height: 25), cornerRadius: 1)
             line.strokeColor = .hexadecimal(0xD0D0D0)
             line.lineWidth = 1
+            line.zPosition = NodesZPosition.label.rawValue
             
             label.position = CGPoint(x: (line.frame.width / 2) * 0.125, y: (line.frame.size.height / 2) * 0.85)
             
@@ -113,6 +90,7 @@ public class CodeScreen: SKSpriteNode {
     }
     
     private func insertPositionY() {
+        currentY = initialY
         for i in 0..<labelOrder.count {
             lines[labelOrder[i]]?.position = CGPoint(x: -(size.width / 2) * 0.825, y: currentY)
             currentY -= 32.5
@@ -128,7 +106,16 @@ public class CodeScreen: SKSpriteNode {
 }
 
 extension CodeScreen: TouchBarSubscriber {
-    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+    public var subscriberName: String {
+        get {
+            self._subscriberName
+        }
+        set {
+            self._subscriberName = newValue
+        }
+    }
+    
+    public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         guard let button = button else { return }
         
         switch notificationType {
@@ -143,8 +130,11 @@ extension CodeScreen: TouchBarSubscriber {
     
     private func numberPressed(_ button: NSButton) {
         if buttonsPressed.count == 0 {
+            guard let button1 = Int(button.title) else { return }
             buttonsPressed.append(button)
-            button.bezelColor = .hexadecimal(0x17B352)
+            
+            lines[button1 - 1]?.flash(strokeColor: .green, count: 0)
+            timer = button.flash(with: .hexadecimal(0x15CE5A))
         }
         else {
             buttonsPressed.append(button)
@@ -158,6 +148,13 @@ extension CodeScreen: TouchBarSubscriber {
             
             buttonsPressed.forEach { $0.bezelColor = .hexadecimal(0x0763CE) }
             buttonsPressed.removeAll()
+            timer?.invalidate()
+            
+            for (_, shape) in lines {
+                shape.removeAllActions()
+                shape.lineWidth = initialLineWidth
+                shape.strokeColor = initialStrokeColor
+            }
         }
     }
     
@@ -197,8 +194,24 @@ extension CodeScreen: TouchBarSubscriber {
                 organized = false
             }
         }
-        print("Organized: ", organized)
-        GameScene.shared.stateMachine.enter(GameState.self)
+        
+        if organized {
+            currentIndex += 1
+            flash(with: .hexadecimal(0x50AC3A), timeInterval: 0.1) {
+                GameScene.shared.stateMachine.enter(GameState.self)
+            }
+        }
+        else {
+//            self.shuffleLabels()
+//            self.insertPositionY()
+//            (TouchBarScene.shared.stateMachine.currentState as? OrganizeCodeLine)?.reorderButtons()
+            update()
+            (TouchBarScene.shared.stateMachine.currentState as? OrganizeCodeLine)?.hiddeButtons()
+            flash(with: .red, count: 2, timeInterval: 0.1) {
+                (TouchBarScene.shared.stateMachine.currentState as? OrganizeCodeLine)?.hiddeButtons(undo: true)
+            }
+            TouchBarScene.shared.notifyTouchBar(color: .red)
+        }
     }
     
     public override var description: String { "CodeScreen" }

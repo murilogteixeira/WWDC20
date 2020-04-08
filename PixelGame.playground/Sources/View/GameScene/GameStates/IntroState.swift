@@ -13,6 +13,7 @@ public class IntroState: GKState {
     unowned let gameScene: GameScene
     lazy var controlNode: SKNode = gameScene.controlNode
     lazy var scene: SKSpriteNode = buildScene()
+    private var _subscriberName: String!
     
     lazy var hero = gameScene.hero
     
@@ -50,7 +51,7 @@ public class IntroState: GKState {
             Command+Shift+8 para exibí-la.
             """,
         ]
-        let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog)
+        let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog, name: "touchBarIntroDialog")
         return node
     }()
     
@@ -99,7 +100,7 @@ public class IntroState: GKState {
             3/3
             """,
         ]
-        let node = DialogMessageContainer(position: .zero, size: 400, textDialog: textDialog)
+        let node = DialogMessageContainer(position: .zero, size: 400, textDialog: textDialog, name: "collectableIntroDialog")
         return node
     }()
     
@@ -157,7 +158,7 @@ public class IntroState: GKState {
             3/3
             """,
         ]
-        let node = DialogMessageContainer(position: .zero, size: 400, textDialog: textDialog)
+        let node = DialogMessageContainer(position: .zero, size: 400, textDialog: textDialog, name: "gameIntroDialog")
         return node
     }()
     
@@ -188,7 +189,7 @@ public class IntroState: GKState {
     
     lazy var door: Door = {
         let size = CGSize(width: 60, height: 100)
-        let position = CGPoint(x: (scene.size.width / 2) - (size.width / 2), y: -150)
+        let position = CGPoint(x: (scene.size.width / 2) - (size.width), y: -155)
         let node = Door(size: size, position: position)
         return node
     }()
@@ -248,6 +249,7 @@ public class IntroState: GKState {
     init(gameScene: GameScene) {
         self.gameScene = gameScene
         super.init()
+        self._subscriberName = "IntroState"
     }
 }
 
@@ -265,8 +267,17 @@ extension IntroState {
 
 //MARK: TouchBarSubscriberNotifyer
 extension IntroState: TouchBarSubscriber {
+    public var subscriberName: String {
+        get {
+            self._subscriberName
+        }
+        set {
+            self._subscriberName = newValue
+        }
+    }
     
-    func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
+    
+    public func buttonTapped(_ notificationType: TouchBarNotificationType, with button: NSButton? = nil) {
         switch notificationType {
         case .didEnded:
             currentAction += 1

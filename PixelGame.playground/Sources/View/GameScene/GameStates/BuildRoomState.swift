@@ -17,13 +17,47 @@ public class BuildRoomState: GKState {
     
     lazy var hero = gameScene.hero
     
+    lazy var intructionLabel: SKLabelNode = {
+        let label = SKLabelNode(fontNamed: kFontName)
+        label.text = """
+        Use a iTool para mover as linhas e executar
+        
+        o código. Primeiro toque na linha origem e
+        
+          depois na linha destino para organizar.
+        """
+        label.position = CGPoint(x: 0, y: (scene.frame.size.height / 2) * -0.65)
+        label.fontColor = .black
+        label.fontSize = 9
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        label.verticalAlignmentMode = .center
+        label.horizontalAlignmentMode = .center
+        label.zPosition = NodesZPosition.label.rawValue
+        return label
+    }()
+    
+    lazy var titleLabel: SKLabelNode = {
+        let label = SKLabelNode(fontNamed: kFontName)
+        label.text = self.codeScreenData[self.currentData]["title"] as? String
+        label.position = CGPoint(x: 0, y: (scene.frame.size.height / 2) * 0.6)
+        label.fontColor = .black
+        label.fontSize = 10
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 0
+        label.verticalAlignmentMode = .center
+        label.horizontalAlignmentMode = .center
+        label.zPosition = NodesZPosition.label.rawValue
+        return label
+    }()
+    
     var currentData = 0
     let codeScreenData = [
         [
             "title": """
             Organize o código de criação de
             
-            frutas para nascer na árvore correta
+                árvores e seus frutos
             """,
             "codeLines": [
                 0: "let arvore = Arvore()",
@@ -52,10 +86,12 @@ public class BuildRoomState: GKState {
     ]
     
     lazy var codeScreen: CodeScreen = {
-        let proportion: CGFloat = 0.6
-        return CodeScreen(position: CGPoint(x: 0, y: scene.frame.size.height * -0.03),
-                          size: CGSize(width: scene.size.width * proportion, height: scene.size.height * proportion),
-                          data: codeScreenData[currentData])
+//        guard let codeLines = codeScreenData[currentData]["codeLines"] as? [Int : String] else { return CodeScreen() }
+        let heightProportion: CGFloat = 0.475
+        let widthProportion: CGFloat = 0.6
+        return CodeScreen(position: CGPoint(x: 0, y: 0),
+                          size: CGSize(width: scene.size.width * widthProportion, height: scene.size.height * heightProportion),
+                          codeLines: codeScreenData, name: "codeScreen")
     }()
     
     public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
@@ -76,9 +112,12 @@ public class BuildRoomState: GKState {
         controlNode.alpha = 0
         controlNode.run(.fadeAlpha(to: 1.0, duration: 0.4))
         
-        scene.addChild(hero)
         hero.position = hero.initialPosition
+        scene.addChild(hero)
         
+        scene.addChild(titleLabel)
+        scene.addChild(intructionLabel)
+        codeScreen.update()
         scene.addChild(codeScreen)
         
         TouchBarScene.shared?.stateMachine.enter(OrganizeCodeLine.self)
