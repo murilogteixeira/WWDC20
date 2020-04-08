@@ -8,9 +8,9 @@
 
 import SpriteKit
 
-class TouchBarView: SKView {
-    static var shared: TouchBarView!
-    static var manager = TouchBarManager()
+public class TouchBarView: SKView {
+    public static var shared: TouchBarView!
+    public static var manager = TouchBarManager()
     
     var tbScene: TouchBarScene! {
         didSet {
@@ -31,7 +31,7 @@ class TouchBarView: SKView {
 
 extension TouchBarView: NSTouchBarDelegate {
     
-    override func makeTouchBar() -> NSTouchBar? {
+    public override func makeTouchBar() -> NSTouchBar? {
         let touchBar = NSTouchBar()
         touchBar.delegate = self
         touchBar.customizationIdentifier = .touchBarIdentifier
@@ -39,7 +39,7 @@ extension TouchBarView: NSTouchBarDelegate {
         return touchBar
     }
     
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+    public func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
         let custom = NSCustomTouchBarItem(identifier: identifier)
         custom.view = self
         return custom

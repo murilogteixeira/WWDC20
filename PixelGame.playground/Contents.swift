@@ -10,6 +10,8 @@ scene.scaleMode = .aspectFit
 
 sceneView.presentScene(scene)
 
+TouchBarView.shared = TouchBarView(frame: CGRect(x: 0, y: 0, width: 685, height: 30))
+
 let vc = GameViewController()
 vc.view = sceneView
 
