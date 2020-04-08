@@ -101,8 +101,6 @@ extension DialogMessageContainer {
     }
     
     func updateSize() {
-        let proportionWidth: CGFloat = 1.2
-        let proportionHeight: CGFloat = 1.4
         self.size = CGSize(width: label.frame.size.width + 80, height: label.frame.size.height + 80)
     }
 }
