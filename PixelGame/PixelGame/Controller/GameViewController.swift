@@ -27,9 +27,9 @@ public class GameViewController: NSViewController {
             scene.scaleMode = .aspectFit
             view.presentScene(scene)
         
-            view.ignoresSiblingOrder = true
-            view.showsFPS = true
-            view.showsNodeCount = true
+//            view.ignoresSiblingOrder = true
+//            view.showsFPS = true
+//            view.showsNodeCount = true
 //            view.showsPhysics = true
         }
         
