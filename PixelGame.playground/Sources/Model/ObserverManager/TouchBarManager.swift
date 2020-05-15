@@ -35,20 +35,13 @@ public class TouchBarManager: TouchBarManagerProtocol {
     public func add<T>(subscriber: T) {
         guard let subscriber = subscriber as? TouchBarSubscriber else { return }
         subscribers.append(subscriber)
-        print("TouchBarManager: Subscriber added: \(subscriber)")
+//        print("TouchBarManager: Subscriber added: \(subscriber)")
     }
-    
-//    public func remove<T>(subscriber filter: T) {
-//        guard let filter = filter as? (TouchBarSubscriber) -> Bool,
-//            let index = subscribers.firstIndex(where: filter) else { return }
-//        
-//        subscribers.remove(at: index)
-//    }
     
     func remove<T>(subscriber: T) {
         guard let filter = subscriber as? TouchBarSubscriber,
             let index = subscribers.firstIndex(where: {$0.subscriberName == filter.subscriberName}) else { return }
-        print("TouchBarManager: Subscriber removed: \(subscribers[index])")
+//        print("TouchBarManager: Subscriber removed: \(subscribers[index])")
         subscribers.remove(at: index)
     }
     

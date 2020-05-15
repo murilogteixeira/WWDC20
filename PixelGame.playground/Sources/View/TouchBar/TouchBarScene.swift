@@ -55,7 +55,6 @@ public class TouchBarScene: SKScene {
     public override func didMove(to view: SKView) {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         addChild(sceneTB)
-//        backgroundColor = .black
         addChild(label)
         stateMachine.enter(IdleState.self)
     }
@@ -67,7 +66,6 @@ public class TouchBarScene: SKScene {
     public override init(size: CGSize) {
         super.init(size: size)
         backgroundColor = .black
-//        TouchBarScene.shared = self
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -91,24 +89,6 @@ extension TouchBarScene {
         move.timingMode = .easeInEaseOut
         label.run(move)
     }
-    
-//    func toAlert() {
-//        let colors: [SKColor] = [.white, .black]
-//        var i = 0
-//        let color1: SKAction = .run { [weak self] in
-//            guard let scene = self else { return }
-//            scene.sceneTB.fillColor = colors[i]
-//            i += 1
-//        }
-//        let color2: SKAction = .run { [weak self] in
-//            guard let scene = self else { return }
-//            scene.sceneTB.fillColor = colors[i]
-//            i -= 1
-//        }
-//        let wait: SKAction = .wait(forDuration: 0.05)
-//        let sequence: [SKAction] = [color1, wait, color2, wait, color1, wait, color2]
-//        sceneTB.run(.sequence(sequence))
-//    }
     
     func notifyTouchBar(color: SKColor, duration: TimeInterval = 0.1) {
         let color1: SKAction = .run {

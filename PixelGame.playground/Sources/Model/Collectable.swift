@@ -41,28 +41,6 @@ public class Collectable: SKSpriteNode {
 }
 
 extension Collectable {
-//    func contact(_ sceneParent: SKSpriteNode, _ collectable: SKNode, with object: SKNode) {
-//        
-//        
-//        if object.name == NodeName.hero.rawValue {
-//            collectable.destroy(fadeOut: 0.1)
-////            let color1: SKAction = .run {
-////                TouchBarScene.shared?.sceneTB.fillColor = .red
-////            }
-////            let color2: SKAction = .run {
-////                TouchBarScene.shared?.sceneTB.fillColor = .black
-////            }
-////            let wait: SKAction = .wait(forDuration: 0.1)
-////            let sequence: SKAction = .sequence([color1, wait, color2])
-////            TouchBarScene.shared?.run(sequence)
-//        }
-//        else if object.name == NodeName .floor.rawValue {
-//            collectable.destroy(fadeOut: 0.3)
-//        }
-//    }
-}
-
-extension Collectable {
     var s: SKColor { .hexadecimal(0xf4720b) }
     var v: SKColor { .hexadecimal(0x4A963D) }
     var format: [[SKColor]] {
@@ -75,15 +53,15 @@ extension Collectable {
             [c,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,c,c,c,c,s,s,s,s,c,c,c,c,c,c,c,c,c],
             [c,c,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,c,c,c,c,s,s,s,c,c,c,c,c,c,c,c,c],
             [c,c,c,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,c,c,c,s,s,s,s,c,c,c,c,c,c,c,c],
-            [c,c,c,c,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,c,s,s,s,s,s,c,c,c,c,c,c,c,c],
-            [c,c,c,v,v,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,s,s,s,s,s,s,c,c,v,v,c,c,c],
-            [c,c,v,v,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,c,c,s,s,s,s,s,s,c,c,c,v,v,c,c],
-            [c,v,v,c,c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,c,c,v,v,c],
+            [v,v,v,v,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,c,s,s,s,s,s,c,c,c,c,v,v,v,v],
+            [v,v,v,v,c,c,c,c,c,c,c,c,c,s,s,c,c,s,s,c,c,c,s,s,s,s,s,s,c,c,c,v,v,v,v],
+            [v,v,c,c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,c,c,s,s,s,s,s,s,c,c,c,c,c,v,v],
+            [v,v,c,c,c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,v,v],
             [v,v,c,c,c,c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,c,v,v],
-            [c,v,v,c,c,c,s,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,v,v,c],
-            [c,c,v,v,c,c,c,s,s,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,c,c,c,c,c,v,v,c,c],
-            [c,c,c,v,v,c,c,s,s,s,s,s,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,c,c,v,v,c,c,c],
-            [c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,c,c],
+            [v,v,c,c,c,c,s,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,c,v,v],
+            [v,v,c,c,c,c,c,s,s,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,c,c,c,c,c,c,c,v,v],
+            [v,v,v,v,c,c,c,s,s,s,s,s,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,c,c,c,v,v,v,v],
+            [v,v,v,v,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,c,v,v,v,v],
             [c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,c],
             [c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,s,s,s,c,c,s,s,s,c,c,c,c,c,c],
             [c,c,c,c,c,c,c,c,c,c,c,c,s,s,s,s,s,s,s,s,s,s,c,c,c,c,c,s,s,c,c,c,c,c,c],

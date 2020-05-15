@@ -18,12 +18,11 @@ public class AlertState: GKState {
     var currentString = 0
     
     let strings = [
-        "Toque aqui para continuar",
-        "Identidade confirmada. Carregando...",
-        "Toque na iTool para avançar as intruções",
-        "Botões de ação serão mostradas quando disponíveis",
-        "E alertas visuais serão exibidos",
-        "Toque para mostrar ações disponíveis"
+        "Tap here to continue",
+        "Confirmed identity. Loading...",
+        "Action buttons will be shown when available. Tap here to continue.",
+        "And visual alerts will be displayed. Tap here to continue.",
+        "Tap here to show available actions"
     ]
     
     lazy var tapReceiver: NSButton = {

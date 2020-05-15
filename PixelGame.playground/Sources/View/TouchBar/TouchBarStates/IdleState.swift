@@ -31,7 +31,6 @@ public class IdleState: GKState {
     
     public override func didEnter(from previousState: GKState?) {
         touchBarScene.resetLabel()
-//        touchBarScene.stateMachine.enter(OrganizeCodeLine.self)
     }
     
     public override func willExit(to nextState: GKState) {

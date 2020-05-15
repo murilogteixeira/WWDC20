@@ -125,27 +125,10 @@ public class OrganizeCodeLine: GKState {
 extension OrganizeCodeLine {
     
     private func showButtons() {
-        
-//        guard let buildRoomState = GameScene.shared.stateMachine.currentState as? BuildRoomState else { return }
-//
-//        buttonOrder = buildRoomState.codeScreen.labelOrder
+
 
         TouchBarScene.shared.notifyTouchBar(color: .white, duration: 0.1)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//            self.currentPositionX = self.initialPositionX
-//
-//            for i in 0..<self.buttons.count {
-//                let index = self.buttonOrder[i]
-//                self.buttons[index].frame = CGRect(x: self.currentPositionX, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-//                TouchBarView.shared.addSubview(self.buttons[self.buttonOrder[i]])
-//                self.currentPositionX += 75
-//            }
-//
-//            self.currentPositionX += 30
-//            self.button6.frame = CGRect(x: self.currentPositionX, y: 0, width: self.buttonSize.width, height: self.buttonSize.height)
-//
-//            TouchBarView.shared.addSubview(self.button6)
-//        }
+
         reorderButtons { button in
             TouchBarView.shared.addSubview(button)
         }

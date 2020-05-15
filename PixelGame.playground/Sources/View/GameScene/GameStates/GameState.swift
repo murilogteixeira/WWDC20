@@ -47,29 +47,28 @@ public class GameState: GKState {
     lazy var goalCompletedDialog: DialogMessageContainer = {
         let textDialog = [
             """
-            Parabéns! Você conseguiu
+            Congratulations!
 
-            alcançar o seu objetivo.
+            You have reached your goal.
 
 
             1/3
             """,
             """
-            Coletou a quantidade necessária
+            You have collected the required
 
-            de blocos de código Swift para
+            number of Swift code blocks to
 
-            dar início às correções.
-
+            start corrections.
 
             2/3
             """,
             """
-            Entre na Sala de Contrução para
+            Enter the Construction Room to
 
-            corrigir um bloco de código
+            fix a block of code affected by
 
-            afetado pela bagunça dos Bugs.
+            the Bugs mess.
 
 
             3/3
@@ -89,7 +88,7 @@ public class GameState: GKState {
         node.dialogContainer = goalCompletedDialog
         return node
     }
-
+ 
     lazy var codeBlocksCollectedLabel: SKLabelNode = {
         let label = SKLabelNode(fontNamed: kFontName)
         label.name = NodeName.blocksCountLabel.rawValue
@@ -228,7 +227,9 @@ extension GameState {
     func showDoor() {
 
         guard door.parent == nil else { return }
+        door.alpha = 0
         scene.addChild(door)
+        door.run(.fadeAlpha(to: 1, duration: 0.5))
         door.isShow = true
     }
     

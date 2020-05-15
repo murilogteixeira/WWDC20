@@ -16,9 +16,3 @@ extension SKColor {
         return SKColor(calibratedRed: R, green: G, blue: B, alpha: alpha)
     }
 }
-
-extension CGColor {
-    class func colorWithHex(hex: Int) -> CGColor {
-        return SKColor.hexadecimal(hex).cgColor
-    }
-}

@@ -34,21 +34,21 @@ public class IntroState: GKState {
     lazy var touchBarIntroDialog: DialogMessageContainer = {
         let textDialog = [
             """
-            Olá Bug Fixer! Bem vindo ao
+            Hello Bug Fixer! Welcome to
 
             Code Planet!
 
             
-            Verifique sua iTool (TouchBar),
+            Check your iTool on the TouchBar,
 
-            e conclua as instruções para con-
+            and complete the instructions to
 
-            tinuar.
+            continue.
 
 
-            Caso não a encontre, pressione
+            If you can't find it, press
 
-            Command+Shift+8 para exibí-la.
+            Cmd + Shift + 8 to display it.
             """,
         ]
         let node = DialogMessageContainer(position: .zero, size: 500, textDialog: textDialog, name: "touchBarIntroDialog")
@@ -58,29 +58,25 @@ public class IntroState: GKState {
     lazy var collectableIntroDialog: DialogMessageContainer = {
         let textDialog = [
             """
-            Este é um mundo onde tudo é
-
-            programação. Porém, os recém
-
-            chegados Bugs bagunçaram o
+            This is a world where everything
             
-            código de criação do nosso
+            is programming. However, newcomers
+            
+            Bugs have disrupted the creation
+            
+            code of our planet.
 
-            planeta.
 
-
-            Press > to next
+            Press ( > ) to next
 
             1/3
             """,
             """
-            Os bugs coletam os blocos de
+            The bugs collect the blocks of
 
-            código que compõem nossos
-
-            objetos para usar em seus pla-
-
-            nos malvados.
+            code that make up our objects
+            
+            to be used in their evil plans.
 
 
             Press > to next
@@ -88,11 +84,11 @@ public class IntroState: GKState {
             2/3
             """,
             """
-            E você foi o escolhido para
+            And you were chosen to help us
 
-            nos ajudar a corrigir os bugs
+            fix the bugs that these attackers
 
-            que esses invasores causaram.
+            caused.
 
 
             Press x to close
@@ -107,14 +103,13 @@ public class IntroState: GKState {
     lazy var gameIntroDialog: DialogMessageContainer = {
         let textDialog = [
             """
-            Na próxima parte você vai
+            In the next part, you will
 
-            entrar em ação.
+            take action.
 
+            Are you ready?
 
-            Está preparado?
-
-            Espero que sim.
+            Hope so.
 
 
             Press > to next
@@ -122,18 +117,18 @@ public class IntroState: GKState {
             1/3
             """,
             """
-            Colete o máximo possível de
+            Collect as many blocks of
 
-            blocos de código que os bugs
+            code as possible that the
 
-            deixaram escapar.
+            Bugs have escaped.
 
 
-            Com eles será possível corri-
+            With them, it will be
 
-            gir os problemas que estamos
+            possible to correct the
 
-            enfrentando.
+            problems we are facing.
 
 
             Press > to next
@@ -141,16 +136,18 @@ public class IntroState: GKState {
             2/3
             """,
             """
-            Não deixe que os bugs o atinja!
+            Don't let the bugs hit you!
 
-            Caso aconteça não será possivel
+            If that happens, it will not
 
-            pará-los e o nosso lar será to-
+            be possible to stop them and
 
-            talmente destruído.
+            our house will be completely
+
+            destroyed.
 
 
-            Bom trabalho!
+            Good Job!
 
 
             Press x to close
@@ -255,11 +252,17 @@ public class IntroState: GKState {
 
 extension IntroState {
     func showDoor() {
+        
+        guard door.parent == nil else { return }
+        door.alpha = 0
         scene.addChild(door)
+        door.run(.fadeAlpha(to: 1, duration: 0.5))
         door.isShow = true
     }
     
     func hiddeDoor() {
+        
+        guard door.parent != nil else { return }
         door.removeFromParent()
         door.isShow = false
     }

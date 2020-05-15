@@ -15,7 +15,7 @@ public class ConfirmState: GKState {
     lazy var scene: SKShapeNode = self.touchBarScene.sceneTB
     
     lazy var button: NSButton = {
-        let button = NSButton(title: "Entrar", target: self, action: #selector(tap))
+        let button = NSButton(title: "Enter", target: self, action: #selector(tap))
         button.frame = CGRect(x: 440, y: 0, width: 100, height: 30)
         button.font = NSFont(name: kFontName, size: 12)
         button.bezelColor = .hexadecimal(0x17B352)
@@ -24,7 +24,6 @@ public class ConfirmState: GKState {
     
     @objc func tap() {
         touchBarScene.stateMachine.enter(IdleState.self)
-//        TouchBarView.manager.confirmButton()
         TouchBarView.manager.notify(.confirmButton, with: button)
     }
     
@@ -59,14 +58,12 @@ extension ConfirmState {
                 state.touchBarScene.stateMachine.currentState is ConfirmState else { return }
             TouchBarView.shared.addSubview(state.button)
         }
-//        TouchBarView.manager.didBegin()
         TouchBarView.manager.notify(.didBegin)
     }
     
     func hiddeButtons() {
         button.removeFromSuperview()
         touchBarScene.resetLabel()
-//        TouchBarView.manager.didEnded()
         TouchBarView.manager.notify(.didEnded)
     }
     

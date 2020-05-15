@@ -20,11 +20,11 @@ public class BuildRoomState: GKState {
     lazy var intructionLabel: SKLabelNode = {
         let label = SKLabelNode(fontNamed: kFontName)
         label.text = """
-        Use a iTool para mover as linhas e executar
+        Use iTool to move the lines and run the code.
         
-        o código. Primeiro toque na linha origem e
+        First touch the source line and then the
         
-          depois na linha destino para organizar.
+        destination line to organize.
         """
         label.position = CGPoint(x: 0, y: (scene.frame.size.height / 2) * -0.65)
         label.fontColor = .black
@@ -55,31 +55,29 @@ public class BuildRoomState: GKState {
     let codeScreenData = [
         [
             "title": """
-            Organize o código de criação de
+            Organize the code to create trees
             
-                árvores e seus frutos
+            and their fruits
             """,
             "codeLines": [
-                0: "let arvore = Arvore()",
-                1: "let fruta = Laranja()",
-                2: "if arvore.fruta == laranja {",
-                3: "  arvore.criarFruta(fruta)",
+                0: "let tree = Tree()",
+                1: "let fruit = Orange()",
+                2: "if tree.fruit == 'orange' {",
+                3: "  tree.createFruit(fruit)",
                 4: "}"
             ]
         ],
         [
             "title": """
-            Organize o código de criação da
+            Organize the house creation code to
             
-            casa para colocar os objeto nos
-            
-            locais corretos
+            place objects in the correct places.
             """,
             "codeLines": [
-                0: "let casa = Casa()",
-                1: "let objeto = Porta()",
-                2: "if casa.frente.porta != porta {",
-                3: "  casa.frente.addPorta(objeto)",
+                0: "let house = House()",
+                1: "let object = Door()",
+                2: "if house.front.door != door {",
+                3: "  house.front.addDoor(object)",
                 4: "}",
             ]
         ],
