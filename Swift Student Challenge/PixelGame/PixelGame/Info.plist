@@ -32,5 +32,7 @@
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>ATSApplicationFontsPath</key>
+	<string>PressStart2P-Regular.ttf</string>
 </dict>
 </plist>
